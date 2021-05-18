@@ -1,0 +1,117 @@
+name,units,description
+Time [ms],ms,Millisecond timer from start of datalog
+DensityC,kg/m^3,Density of fuel entering the fuel skid from storage tank measured by Emerson Coriolis Flow meter
+ViscosityA,cSt,Viscosity of fuel in fuel skid supplied to the engine measured by Emerson viscometer
+ViscosityB,cSt,Viscosity of fuel in fuel skid returned from the engine meausred by Emerson viscometer
+DensityB,kg/m^3,Fuel density in fuel skid returned from the engine measured by Emerson viscometer
+AirHum,%RH,Relative humidity of intake air measured in intake duct by Vaisala sensor
+AirTemp,degC,Temperature of intake air measured in intake duct by Vaisala sensor
+Power [kW],kW,Generator output power measured by Verivolt voltmeter and Fluke ammeters
+CurrentA,A,RMS current of first leg of 3 phase power from generator measured by Fluke ammeter
+CurrentB,A,RMS current of second leg of 3 phase power from generator measured by Fluke ammeter
+CurrentC,A,RMS current of third leg of 3 phase power from generator measured by Fluke ammeter
+VoltageA,V,RMS voltage of first leg of 3 phase power from generator measured by Verivolt voltmeter
+VoltageB,V,RMS voltage of second leg of 3 phase power from generator measured by Verivolt voltmeter
+VoltageC,V,RMS voltage of third leg of 3 phase power from generator measured by Verivolt voltmeter
+Engine RPM,RPM,Engine RPM measured from FFT of generator voltage waveform
+MAF,kg/min,Mass air flow of intake air
+SmpInjFlw,N/A,"Placeholder, not used"
+EngSpd,RPM,Engine RPM measured from 4-20 mA output from engine control system
+TurboSpd,RPM,Turbo RPM measured from 4-20 mA output from engine control system
+LOPress,bar,Lube oil pressure
+LTPress,bar,Low temperature freshwater cooling loop pressure
+FOPress,bar,Fuel oil pressure measured at engine
+StAirPress,bar,Start air pressure measured at engine
+HTPress,bar,High temperature freshwater cooling loop pressure
+Cyl1ExT,degC,Cylinder 1 exhaust temperature
+Cyl2ExT,degC,Cylinder 2 exhaust temperature
+Cyl3ExT,degC,Cylinder 3 exhaust temperature
+Cyl4ExT,degC,Cylinder 4 exhaust temperature
+Cyl5ExT,degC,Cylinder 5 exhaust temperature
+Cyl6ExT,degC,Cylinder 6 exhaust temperature
+TurboExT,degC,Exhaust temperature at turbo
+LOVisc,N/A,"Placeholder, not used"
+ExBckPress,N/A,"Placeholder, not used"
+ChrgAirP,bar,Charge air pressure measured at charge air cooler
+HTFlow,N/A,"Placeholder, not used"
+HTRawFlw,N/A,"Placeholder, not used"
+LTFlow,N/A,"Placeholder, not used"
+LTRawFLw,N/A,"Placeholder, not used"
+MBearT1,N/A,"Placeholder, not used"
+MBearT2,N/A,"Placeholder, not used"
+MBearT3,N/A,"Placeholder, not used"
+MBearT4,N/A,"Placeholder, not used"
+MBearT5,N/A,"Placeholder, not used"
+MBearT6,N/A,"Placeholder, not used"
+MBearT7,N/A,"Placeholder, not used"
+LOTemp,degC,Lube oil temperature
+ChgAirT,degC,Charge air temperature after charge air cooler
+HTTAfEng,degC,High temperature freshwater cooling temperature after engine
+ChAirTAfT,degC,Charge air temperature after turbo
+FOTAtEng,degC,Fuel oil temperature at engine
+HTInletT,degC,High temperature freshwater cooling inlet temperature
+HTOutT,degC,High temperature freshwater cooling outlet temperature
+LTInletT,degC,Low temperature freshwater cooling inlet temperature
+LTOutT,degC,Low temperature freshwater cooling outlet temperature
+WindingTA,degC,Generator winding temperature
+WindingTB,degC,Generator winding temperature
+WindingTC,degC,Generator winding temperature
+FrEnBearT,degC,Engine front end bearing temperature
+DrEnBearT,degC,Engine drive end bearing temperature
+RHTInletT,degC,"Placeholder, not used"
+RHTOutT,degC,"Placeholder, not used"
+RLTInletT,degC,"Placeholder, not used"
+RLTOutT,degC,"Placeholder, not used"
+FlowA,kg/hr,Fuel flow supplied to engine measured by Emerson coriolis meter
+FlowB,kg/hr,Fuel flow returned from engine measured by Emerson coriolis meter
+FlowC,kg/hr,Fuel flow entering fuel skid from storage tanks measured by Emerson coriolis meter
+DiffFlow,kg/hr,Engine fuel consumption calculated by differential fuel flow (FlowA-FlowB)
+DiffCons,kg,Engine fuel consumption totalizer calculated from differential fuel flow (FlowA-FlowB)
+ConsC,kg,Fuel consumption totalizer for fuel entering fuel skid from storage tanks
+Soot Conc. Eng 1,N/A,"Placeholder, not used"
+Soot Dilution Eng 1,vol/vol,Soot sample dilution
+Exhaust T Eng 1,K,Exhaust temperature at emissions sampling location
+Exhaust P Eng 1,Pa,Exhaust pressure at emissions sampling location
+Concentration,N/A,"Placeholder, not used"
+"NO (350,3000) 191C       ",ppm vol/vol,NO volume fraction by FTIR
+NO2 (150) 191C (1of2)    ,ppm vol/vol,Range 1 NO2 volume fraction from FTIR
+NO2 (2000) 191C (2of2)   ,ppm vol/vol,Range 2 NO2 volume fraction from FTIR
+"N2O (100,200,300) 191C   ",ppm vol/vol,N2O volume fraction by FTIR
+NH3 (300) 191C (1of2)    ,ppm vol/vol,Range 1 NH3 volume fraction from FTIR
+NH3 (3000) 191C (2of2)   ,ppm vol/vol,Range 2 NH3 volume fraction from FTIR
+HNCO (400) 191C          ,ppm vol/vol,HNCO volume fraction from FTIR
+H2O% (20) 191C           ,% vol/vol,H2O volume fraction by FTIR
+Formaldehyde (70) 191C   ,ppm vol/vol,Formaldehyde volume fraction by FTIR
+Urea by-product (AU) 191C,ppm vol/vol,Urea by-product volume fraction by FTIR
+CO2% (20) 191C           ,% vol/vol,CO2 volume fraction by FTIR
+CO (500) 191C (1of2)     ,ppm vol/vol,Range 1 CO volume fraction by FTIR
+CO% (1) 191C (2of2)      ,% vol/vol,Range 2 CO volume fraction by FTIR
+"Propylene (200,1000) 191C",ppm vol/vol,Propylene volume fraction by FTIR
+Diesel (C1 4500) 191C    ,ppm vol/vol,Diesel volume fraction by FTIR
+"Ethylene (100,3000) 191C ",ppm vol/vol,Ethylene volume fraction by FTIR
+CH4 (250) 191C (1of2)    ,ppm vol/vol,Range 1 CH4 volume fraction by FTIR
+CH4 (3000) 191C (2of2)   ,ppm vol/vol,Range 2 CH4 volume fraction by FTIR
+Ethane (1000) 191C       ,ppm vol/vol,Ethane volume fraction by FTIR
+Acetylene (1000) 191C    ,ppm vol/vol,Acetylene volume fraction by FTIR
+NOxP (20) 191C           ,ppm vol/vol,NOx precursor species volume fraction by FTIR
+Acrolein 191c            ,ppm vol/vol,Acrolein volume fraction by FTIR
+SO2 (300) 191C           ,ppm vol/vol,SO2 volume fraciton by FTIR
+SO3 (150) 191C           ,ppm vol/vol,SO3 volume fraction by FTIR
+Propane (1000) 191C      ,ppm vol/vol,Propane volume fraction by FTIR
+NO2 autorange            ,ppm vol/vol,Autorange calculated NO2 volume fraction by FTIR
+CO autorange             ,ppm vol/vol,Autorange calculated CO volume fraction by FTIR
+CH4 autorange            ,ppm vol/vol,Autorange calculated CH4 volume fraction by FTIR
+NH3 autorange            ,ppm vol/vol,Autorange calculated NH3 volume fraction by FTIR
+NOx autorange            ,ppm vol/vol,Autorange calculated NOx volume fraction by FTIR
+CO autorange dry         ,ppm vol/vol,Autorange calculated CO volume fraction excluding H2O by FTIR
+CO2% autorange dry       ,% vol/vol,Autorange calculated CO2 volume fraction excluding H2O by FTIR
+NO dry                   ,ppm vol/vol,Autorange calculated NO volume fraction excluding H2O by FTIR
+NO2 autorange dry        ,ppm vol/vol,Autorange calculated NO2 volume fraction excluding H2O by FTIR
+NOx autorange dry        ,ppm vol/vol,Autorange calculated NOx volume fraction excluding H2O by FTIR
+FIDeq THC ppmC           ,ppm vol/vol,FID equivalent total unburned hydrocarbons calculated by FTIR
+FIDeq NMHC ppmC          ,ppm vol/vol,FID equivalent non-methane unburned hydrocarbons calculated by FTIR
+FIDeq NMNEHC ppmC        ,ppm vol/vol,FID equivalent non-methane non-ethane unburned hydrocarbons calculated by FTIR
+N2O autorange            ,ppm vol/vol,Autorange calculated N2O volume fraction by FTIR
+CO2% autorange           ,% vol/vol,Autorange calculated CO2 volume fraction by FTIR
+FTIR NMHC ppmC           ,ppm vol/vol,FTIR calculated non-methane unburned hydrocarbon volume fraction
+FTIR NMNEHC ppmC         ,ppm vol/vol,FTIR calculated non-methane non-ethane unburned hydrocarbon volume fraction

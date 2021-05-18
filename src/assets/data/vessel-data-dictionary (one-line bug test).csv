@@ -1,0 +1,2 @@
+name,units,description
+VoltageA,V,RMS voltage of first leg of 3 phase power from generator measured by Verivolt voltmeter

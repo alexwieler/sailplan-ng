@@ -1,0 +1,12 @@
+<div class="sensor-dropdown">
+  <select #sensorSelectDropdown (change)="setGraphSensor(sensorSelectDropdown.value)">
+    <option disabled hidden>Choose a sensor</option>
+    <option value="MAF">MAF</option>
+    <option *ngFor="let sensorName of sensorList; index as i;" value="{{sensorName}}">{{sensorName}}</option>
+  </select>
+</div>
+<div class="sensor-desc">
+  {{sensorDictionary[activeSensor].description}}
+</div>
+
+<div id="chartContainer"></div>

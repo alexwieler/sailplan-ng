@@ -1,0 +1,54 @@
+<div class="grid-container">
+
+  <div class="navbar">
+    <div class="navbar-links">
+      <div class="page-title">
+        <div id="sailplan-logo">
+          <img src="../../assets/SailPlanLogoLight.png" width="175px">
+        </div>
+      </div>
+      <div class="page-links">
+        <h2 (click)="showfleet()">Fleet</h2>
+        <h2 (click)="showinfrastructures()">Infrastructure</h2>
+        <h2 (click)="showalerts()">Alerts</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar">
+    <app-toolbar [showMap]="this.showMap" (updateShowMap)="receiveMessage($event)"></app-toolbar>
+  </div>
+
+
+  <div class="main-section">
+
+    <app-alerts [hidden]="!this.showAlerts" (updateShowAlerts)="receiveMessageShowAlerts($event)"></app-alerts>
+
+    <div class="float-vessel">
+      <div class="vessel-container">
+        <div class="vessel-name">SeaGlider 1</div>
+        <div class="captain-name">Capt. Walker</div>
+      </div>
+      <div class="vessel-container">
+        <div class="vessel-name">Vessel 2</div>
+        <div class="captain-name">Capt. Smith</div>
+      </div>
+      <div class="vessel-container">
+        <div class="vessel-name">Vessel 3</div>
+        <div class="captain-name">Capt. Miller</div>
+      </div>
+
+    </div>
+
+
+    <app-map [hidden]="!this.showMap"></app-map>
+  </div>
+
+
+
+  <div class="bottom-section">
+    <div [hidden]="false" class="graphs-container">
+      <app-graph-imu></app-graph-imu>
+    </div>
+  </div>
+</div>

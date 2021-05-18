@@ -1,0 +1,32 @@
+<div class="details-container">
+
+  <div class="title">Details Section</div>
+
+
+<!--  TODO:  Refactor details component as buoydetails -->
+
+
+<!--  Table documentation here -->
+<!--  https://ng-bootstrap.github.io/#/components/table/examples -->
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Buoy</th>
+      <th scope="col">Status</th>
+      <th scope="col">Last Update</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let buoy of buoy_bases.data.features; index as i;">
+      <th scope="row">{{ i + 1 }}</th>
+      <td>
+        {{ buoy.properties.nickname }}
+      </td>
+      <td>{{ buoy.properties.status }}</td>
+      <td>{{ buoy.properties.last_update }}</td>
+    </tr>
+    </tbody>
+  </table>
+
+</div>

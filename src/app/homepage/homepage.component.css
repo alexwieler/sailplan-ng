@@ -1,0 +1,33 @@
+.main-section{
+  position:relative;
+}
+
+.float-vessel{
+  position: absolute;
+  z-index: 9999;
+  top: 15px;
+  left: 15px;
+
+
+
+}
+.vessel-container{
+  padding: 6px;
+  background: whitesmoke;
+  margin-bottom:4px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.vessel-container:hover{
+  border: 1px solid #1b2638;
+  background: #dddddd;
+}
+.vessel-name{
+  font-size:.9rem;
+  text-align:center;
+}
+.captain-name{
+  font-size:.7rem;
+  text-align:center;
+}

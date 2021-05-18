@@ -1,0 +1,35 @@
+<div id="infraview">
+    <div id="title">
+        <h2>{{ this.infrastructure.nickname }}</h2>
+    </div>
+    <div id="map" class="map-container"></div>
+    <br>
+    <h4>All data received</h4>
+    <p>Last update received was at {{this.infrastructure.last_update}}</p>
+    <div id="info">
+        
+
+        <table id="updates-table">
+            <tr>
+                <th *ngFor = "let column of this.table_headers">
+                    {{ column }}
+                </th>
+            </tr>
+            <tr *ngFor = "let update of this.infrastructure.updates">
+                <td>
+                    {{ update.time }}
+                </td>
+                <td>
+                    {{ update.lat}}, {{ update.long }}
+                </td>
+                <td>
+                    {{ update.imu }}
+                </td>
+                <td>
+                    {{ update.info }}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br>
+</div>

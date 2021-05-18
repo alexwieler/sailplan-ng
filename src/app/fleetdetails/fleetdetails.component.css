@@ -1,0 +1,39 @@
+.vessel-table{
+  width: calc(100%)
+}
+.title{
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+thead tr{
+  background-color: whitesmoke;
+}
+tbody tr{
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+}
+td{
+  vertical-align:middle;
+  height:63px;
+}
+
+.selected {
+  background-color: #dddddd !important;
+}
+tbody tr:hover:not(.selected){
+  background-color: #eaeaea;
+}
+
+#add-vessel-form{
+  margin-bottom: 30px;
+}
+
+#delete-vessel-button{
+  color: #bf6969;
+}
+
+
+.action-row{
+  width: 200px;
+}

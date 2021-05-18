@@ -1,0 +1,17 @@
+<ul class>
+    <li><a (click)='showalerts()'>Alerts</a></li>
+    <li><a (click)='showweather()'>Weather</a></li>
+    <li><a (click)='showinfo()'>Info</a></li>
+</ul>
+
+<div class="terminal-content">
+    <div class="alertwindow" *ngIf="current_view == 'alerts'">
+        <app-alerts></app-alerts>
+    </div>
+    <div class="weatherwindow" *ngIf="current_view == 'weather'">
+        <app-weather></app-weather>
+    </div>
+    <div class="infowindow" *ngIf="current_view == 'info'">
+        <app-info></app-info>
+    </div>
+</div>

@@ -1,0 +1,50 @@
+<h2>Add an Infrastructure</h2>
+
+<form [formGroup]="infrastructureform" (ngSubmit)="onSubmit()">
+    <label>
+        Nickname:
+        <input type="text" formControlName="nickname">
+    </label>
+    <br>
+    <label>
+        Country:
+        <select formControlName="country">
+            <option value="usa">United States</option>
+            <option value="spain">Spain</option>
+        </select>
+    </label>
+    <br>
+    <label>
+        Base latitude:
+        <input type="text" formControlName="baselat" placeholder="lat...">
+    </label>
+    <label>
+        Base longitude:
+        <input type="text" formControlName="baselong" placeholder="long...">
+    </label>
+    <br>
+    <label>
+        Monitoring radius (m):
+        <input type="text" formControlName="radius">
+    </label>
+    <br>
+    <label>
+        Update period (s): 
+        <input type="text" formControlName="period">
+    </label>
+    <h2>How do you want to be alerted?</h2>
+    <input type="checkbox" formControlName="textmessage">
+    <label>Text Message</label><br>
+    <input type="checkbox" formControlName="email">
+    <label>Email</label><br>
+    <button mat-flat-button color="accent" type="submit">Submit</button>
+</form>
+
+<pre *ngIf="responseJson">
+    <h2>Buoy added to your account. <br>Save the API key bellow to connect to it</h2>
+    <p>{{ responseJson.apikey | json }}</p>
+</pre>
+
+<pre *ngIf="error_msg">
+    <p> {{ error_msg }}</p>
+</pre>

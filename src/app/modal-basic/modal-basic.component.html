@@ -1,0 +1,15 @@
+<ng-template #modalContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">{{titleText}}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    {{modalBody}}
+    <app-vesselform></app-vesselform>
+
+  </div>
+</ng-template>
+
+<button id="add-vessel-button" mat-flat-button (click)="open(modalContent)">Add New Vessel</button>

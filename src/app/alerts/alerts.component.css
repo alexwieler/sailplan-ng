@@ -1,0 +1,19 @@
+.alerts-container{
+  position: absolute;
+  z-index: 9999;
+  top: 20px;
+  right: 20px;
+  background: white;
+  padding: 20px;
+  background: #0000008c;
+  color: white;
+  border-radius: 5px;
+}
+
+.alert-detail{
+  cursor: pointer;
+}
+.alert-detail:hover{
+  color: #9ec8d8;
+  transition: color ease-in .15s!important;
+}

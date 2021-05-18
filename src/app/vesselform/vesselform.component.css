@@ -1,0 +1,10 @@
+h2{
+    font-size: 17px;
+    padding-bottom: 20px;
+}
+.vessel-form{
+  width: 250px;
+}
+label{
+  margin-bottom: .2rem;
+}

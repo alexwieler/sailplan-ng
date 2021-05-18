@@ -1,0 +1,194 @@
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: 'Varela Round', sans-serif;
+}
+
+.details-menu{
+  padding-bottom: 15px;
+}
+.btn-primary{
+  background-color: #42658a;
+  border-color: #2e5886;
+}
+.btn-primary:hover, .btn-primary:active, .btn-primary::selection{
+  background-color: #3d71a9;
+}
+
+.navbar{
+  grid-area: header;
+  background-color: #1b2638;
+  color: rgb(255, 255, 255);
+  /*padding: 20px 0;*/
+  /*border-bottom: 1px solid #969696;*/
+}
+
+.navbar h1{
+  font-size: 25px;
+  padding-top: 5px;
+  font-family: 'Varela Round', sans-serif;
+}
+
+.navbar-links{
+  display: grid;
+  grid-template-columns: 400px auto 340px;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "left mid right";
+  width: calc(100%);
+}
+.page-title{
+  grid-area: left;
+}
+
+.page-links{
+  grid-area: right;
+}
+
+.page-links h2{
+  display: inline-block;
+  font-size: 22px;
+  font-family: 'Varela Round', sans-serif;
+  margin-right: 20px;
+  margin-bottom:0!important;
+}
+.page-links h2:hover{
+  cursor: pointer;
+  color:rgb(56, 126, 184);
+}
+
+.sidebar{
+  grid-area: sidebar;
+  background-color: #1D262D;
+  color: white;
+}
+
+.bottom-section{
+  padding: 30px;
+  width:100%;
+  grid-area: bottom;
+}
+.main-section{
+  width:100%;
+  grid-area: main;
+  /*margin-bottom:30px;*/
+}
+.mapview{
+  padding: 30px;
+}
+.graphs-container{
+  padding: 30px;
+}
+
+.footer{
+  grid-area: footer;
+  background-color: #152035;
+  color: white;
+  height:400px;
+}
+
+.grid-container{
+  display: grid;
+  grid-template-columns: 210px auto;
+  /*grid-template-columns: 100%;*/
+  grid-template-rows: auto 450px 450px auto;
+  /*grid-template-rows: 68px 450px 450px;*/
+  grid-template-areas:
+  /*"header header header"
+  "main main main"
+  "bottom bottom bottom";
+  "footer footer footer";*/
+
+    "sidebar header header header"
+    "sidebar main main main"
+    "sidebar bottom bottom bottom"
+    "sidebar footer footer footer";
+
+  width: calc(100%);
+  height: calc(100%);
+}
+
+#sailplan-logo img{
+
+}
+
+#sailplan-logo{
+  margin-left:20px;
+}
+
+.fleetview{
+  width: calc(100%);
+}
+.ais-popup p{
+  white-space:pre;
+  height: 200px;
+  overflow: auto;
+}
+
+
+
+
+
+.navbar {
+  grid-area: header!important;
+  background-color: #1b69ae!important;
+  color: rgb(255, 255, 255)!important;
+  padding: 20px 0!important;
+  border-bottom: 1px solid #969696!important;
+
+}
+.navbar{
+  background: rgb(3,70,96);
+  background: linear-gradient(45deg, rgba(3,70,96,1) 68%, rgb(57 117 140) 50%, rgba(1,89,123,1) 100%)!important;
+
+}
+
+.page-links h2:hover {
+  cursor: pointer!important;
+  color: rgb(186, 224, 255)!important;
+  transition: ease-in .15s!important;
+}
+.page-links h2 {
+  display: inline-block!important;
+  font-size: 22px!important;
+  font-family: 'Varela Round', sans-serif!important;
+  margin-right: 20px!important;
+  margin-bottom: 0 !important;
+  transition: ease-in .15s!important;
+}
+.captain-name {
+  font-size: .7rem!important;
+  text-align: right!important;
+  width: 50%!important;
+  float: left!important;
+  color: whitesmoke!important;
+  margin-top:2px;
+}
+.vessel-name {
+  font-size: .9rem!important;
+  text-align: left!important;
+  width: 50%!important;
+  float: left!important;
+  color: white!important;
+  font-weight: bold!important;
+}
+.vessel-container {
+  padding: 6px!important;
+  background: #1c1c1ca3!important;
+  margin-bottom: 4px!important;
+  border-radius: 3px!important;
+  cursor: pointer!important;
+  border: 1px solid transparent!important;
+  width: 200px!important;
+  height: 31px!important;
+  transition: ease-in .15s!important;
+}
+.vessel-container:hover {
+  border: 1px solid #1b2638!important;
+  background: #5a8fd2a3!important;
+  transition: ease-in .15s!important;
+}
+

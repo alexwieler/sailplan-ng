@@ -1,0 +1,88 @@
+<div class="details-container">
+
+<!--  sample-graph is the original code I wrote to show a live time graph with random fake data -->
+<!--  <app-sample-graph *ngIf="this.showGraph"></app-sample-graph>-->
+
+
+
+  <div class="title">{{selectedVesselName || this.defaultComponentTitle}}</div>
+
+
+<!-- This code is no longer needed, we are now using the app-modal-basic -->
+<!--  <button id="add-vessel-button" mat-flat-button *ngIf="!showform" (click)="show()">Add New Vessel</button>-->
+
+<!--  <div *ngIf="showform" id="add-vessel-form">-->
+<!--    <app-vesselform></app-vesselform>-->
+<!--  </div>-->
+
+  <div class="details-menu">
+
+    <app-modal-basic [titleText]="titleText" [modalBody]="modalBody"></app-modal-basic>
+
+<!--    <div *ngIf="selectedRow == null ? false : true" class="vessel-buttons">-->
+<!--                                                          &lt;!&ndash;      TODO:  populate deleteVessel(null) with vesselId &ndash;&gt;-->
+<!--      <button *ngIf="selectedRow == null ? false : true" id="delete-vessel-button" mat-flat-button (click)="deleteVessel(null)">Delete Vessel</button>-->
+
+<!--      <button *ngIf="selectedRow == null ? false : true" id="add-route-button" mat-flat-button (click)="addRoute()">Add a Route</button>-->
+<!--    </div>-->
+  </div>
+
+
+  <table class="table vessel-table">
+    <thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Vessel</th>
+      <th scope="col">Captain</th>
+      <th scope="col">Status</th>
+      <th scope="col">Last Update</th>
+    </tr>
+    </thead>
+    <tbody
+    >
+    <tr *ngFor="let vessel of vessels; index as i;"
+
+        [className]="i == selectedRow ? 'selected' : ''"
+        (click)="setClickedRow($event, i, vessel.vesselId)"
+    >
+
+      <th scope="row" class="action-row">
+
+        <div ngbDropdown class="d-inline-block">
+          <button [hidden]="selectedRow != i" class="btn btn-primary" id="action-button" ngbDropdownToggle>Actions</button>
+          <div ngbDropdownMenu aria-labelledby="action-button">
+
+<!--            <button ngbDropdownItem id="add-route-button" class="btn btn-lg" (click)="addRoute()">Add a route</button>-->
+
+            <button ngbDropdownItem id="edit-vessel-button" class="btn btn-lg" (click)="editVessel(null)">Edit details</button>
+
+            <button ngbDropdownItem id="delete-vessel-button" class="btn btn-lg" (click)="deleteVessel(null)">Delete vessel</button>
+
+          </div>
+        </div>
+      </th>
+<!--      <td>-->
+<!--        <button class="btn" id="view-graph">View Graphs</button>-->
+<!--      </td>-->
+      <td>
+        {{ vessel.nickname }}
+      </td>
+      <td>{{ vessel.captain }}</td>
+      <td>{{ vessel.status }}</td>
+
+      <td>{{ vessel.last_update }}</td>
+<!--      *** Vessel Data ***   -->
+<!--      apikey: "9bb1c72a-30dc-46d6-9d3c-6c2df3ed5a58"-->
+<!--      captain: "Dan"-->
+<!--      country: "usa"-->
+<!--      date_created: "2021-01-28T21:12:59.107Z"-->
+<!--      last_update: "no update received"-->
+<!--      nickname: "vessel1"-->
+<!--      period: "1"-->
+<!--      status: "not connected"-->
+<!--      user_id: "auth0|6012ffc63b2d340069d0ee5f"-->
+    </tr>
+    </tbody>
+  </table>
+
+</div>

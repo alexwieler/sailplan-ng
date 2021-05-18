@@ -1,0 +1,224 @@
+#navbar{
+    min-width: calc(100%);
+    min-height: auto;
+    position: fixed;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+#navbar-logo{
+    padding: 20px;
+    padding-left: 60px;
+    float: left;
+}
+
+#nav-links{
+    float: right;
+    padding-top: 15px;
+    padding-right: 60px;
+    
+}
+
+.nav-link{
+    padding-right: 20px;
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 13;
+    font-family: 'Valera Round', sans-serif;
+    color: black;
+}
+
+.nav-link:hover{
+    color: rgb(24, 50, 82);
+}
+
+@media screen{
+    #intro{
+        height: calc(85%);
+        background-image: url('../../assets/images/bg.jpg');
+        background-size: 100vw;
+        background-position: center;
+        min-height: 750px;
+    }
+}
+
+#intro h1{
+    font-size: 50px;
+    color: rgba(255, 255, 255, 0.89);
+    padding-top: 145px;
+    text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+}
+
+#intro p{
+    font-size: 30px;
+    color: rgba(255, 255, 255, 0.89);
+    text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+    padding-top: 20%;
+}
+
+#learnmore-button{
+    position: absolute;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    margin-top: 20px;
+    background-color:rgba(39, 79, 114, 0.77);
+    color: white;
+    font-family: 'Varela Round', sans-serif;
+}
+
+#info{
+    height: calc(100%);
+    min-height: 1000px;
+}
+
+#info h1{
+    text-align: center;
+    padding-top: 200px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 30px;
+}
+
+#info h2{
+    text-align: center;
+    padding-top: 22px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 23px;
+}
+
+#grid-container{
+    display: grid;
+    grid-template-columns: auto auto auto;
+    padding: 10px;
+    justify-content: center;
+    column-gap: 7%;
+}
+
+.grid-item{
+    padding: 20px;
+    font-size: 30px;
+    text-align: center;
+    max-width: 400px;
+}
+
+.section-title{
+    color: #333;
+    font-family: 'Varela Round', sans-serif;
+    font-size: 18px;
+    padding-top: 16px;
+}
+
+.section-info p{
+    font-size: 16px;
+    font-family: 'Valera Round', sans-serif;
+    padding-top: 16px;
+}
+
+#learn-more-text{
+    position: absolute;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    margin-top: 20px;
+    font-family: 'Varela Round', sans-serif;
+    font-size: 16px;
+}
+
+#learn-more-text a{
+    color: rgb(70, 98, 158);
+}
+
+#learn-more-text a:hover{
+    color: rgb(24, 86, 219);
+}
+
+#contact-us{
+    height: calc(85%);
+    background-color: #f3f3f3;
+    width: calc(100%);
+    position: static;
+    min-height: 800px;
+}
+#contact-us h1{
+    display: inline-block;
+    font-size: 18px;
+    font-family: 'Varela Round', sans-serif;
+    padding-top: 50px;
+}
+
+#learn{
+    float: left;
+    padding-left: 10%;
+    max-width: 40%;
+}
+
+#connect{
+    float: right;
+    padding-right: 20%;
+    max-width: 40%;
+}
+
+#learn h1{
+    font-size: 18px;
+    font-family: 'Varela Round', sans-serif;
+}
+
+#learn p{
+    font-size: 16px;
+    font-family: 'Varela Round', sans-serif;
+    padding-top: 10px;
+}
+
+#learn h2{
+    font-size: 18px;
+    font-family: 'Varela Round', sans-serif;
+    font-weight: bold;
+    padding-top: 30px;
+}
+
+#learn ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#learn li{
+    margin-top: 15px;
+}
+
+#learn button{
+    background-color: rgba(39, 79, 114, 0.77);
+    color: white;
+    margin-top: 110px;
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+#connect form{
+    padding-top: 85px;
+}
+
+.form-label{
+    font-size: 16px;
+    font-family: 'Varela Round', sans-serif;
+    font-weight: bold;
+    padding-top: 20px;
+}
+
+.form-input input{
+    width: 300px;
+}
+
+#message{
+    width: 600px;
+    height: 100px;
+}
+
+.submitbutton button{
+    background-color: rgba(39, 79, 114, 0.77);
+    color: white;
+    margin-top: 20px;
+    padding-right: 20px;
+    padding-left: 20px;
+}

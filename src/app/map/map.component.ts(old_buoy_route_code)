@@ -1,0 +1,1756 @@
+/**
+ * Map component that loads data from the buoys and vessels and loads them on the map
+ */
+
+import {Component, OnInit, ChangeDetectorRef, Input} from '@angular/core';
+import { environment } from '../../environments/environment';
+import * as mapboxgl from 'mapbox-gl';
+import { BuoysService } from '../buoys.service';
+import { map, mapTo } from 'rxjs/operators';
+import { MapService } from '../map.service';
+import { BaseFilteringStrategy } from 'igniteui-angular';
+import {VesselsService} from '../vessels.service';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {HttpClient} from '@angular/common/http';
+import {AuthService} from '../auth.service';
+import {RoutesService} from '../routes.service';
+import {DataService} from '../data.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import * as turf from '@turf/turf';
+
+@Component({
+  selector: 'app-map',
+  templateUrl: './map.component.html',
+  styleUrls: ['./map.component.css']
+})
+export class MapComponent implements OnInit {
+
+   // TODO:  Find a way to update primary dashboard map based on buoy or vessel data (instead of creating a new map in vesselview)
+
+  @Input() vessel: any;
+
+  vessels: any;
+
+  currentStep: any;
+
+  currentGpsStep: any;
+
+  /*
+  buoys: any;
+   */
+
+  map: mapboxgl.Map;
+
+  // Actual, current location of the buoy
+  /*
+  buoy_points: any = {
+    'type': 'geojson',
+    'data': {
+      'type': 'FeatureCollection',
+      'features': []
+    }
+  };
+   */
+
+  // Location of the center of the buoy base
+  /*
+  buoy_bases: any = {
+    'type': 'geojson',
+    'data': {
+      'type': 'FeatureCollection',
+      'features': []
+    }
+  };
+   */
+
+  // stores the geofences (polygon of 32 sides) for each buoy
+  // Geofence is determined by the buoys
+  /*
+  geofences: any = {
+    'type': 'geojson',
+    'data': {
+      'type': 'FeatureCollection',
+      'features': []
+    }
+  };
+   */
+
+  routeData: any = [
+    [-70.99374033333334, 41.34926466666667],
+    [-70.9922955, 41.3493935],
+    [-70.99079966666666, 41.3498165],
+    [-70.98928466666666, 41.35047483333334],
+    [-70.98765833333333, 41.35128366666667],
+    [-70.985923, 41.352186833333334],
+    [-70.9841075, 41.35309783333334],
+    [-70.9821595, 41.35390683333333],
+    [-70.98015016666666, 41.354678166666666],
+    [-70.97821666666667, 41.355509],
+    [-70.9765195, 41.35652233333333],
+    [-70.97487366666667, 41.35758166666667],
+    [-70.97327033333333, 41.35865283333333],
+    [-70.97165633333333, 41.35974616666667],
+    [-70.969982, 41.360647666666665],
+    [-70.9683, 41.361367],
+    [-70.96661, 41.362070333333335],
+    [-70.96494216666666, 41.36279233333333],
+    [-70.963283, 41.36345033333333],
+    [-70.961601, 41.36406233333334],
+    [-70.95995016666667, 41.364674666666666],
+    [-70.9582965, 41.365289833333335],
+    [-70.9566605, 41.36593033333333],
+    [-70.95511166666667, 41.36654266666667],
+    [-70.953535, 41.367158],
+    [-70.951926, 41.36780533333334],
+    [-70.95030983333334, 41.36854266666667],
+    [-70.94870866666666, 41.3693005],
+    [-70.9470685, 41.3700615],
+    [-70.94542866666667, 41.37082866666667],
+    [-70.9437815, 41.371579833333335],
+    [-70.9421605, 41.37232266666667],
+    [-70.94052433333333, 41.373055666666666],
+    [-70.93884883333334, 41.373771166666664],
+    [-70.93708783333334, 41.374490333333334],
+    [-70.93524416666666, 41.37519183333333],
+    [-70.93333866666667, 41.37590483333334],
+    [-70.93142766666666, 41.376668],
+    [-70.929508, 41.377474666666664],
+    [-70.927601, 41.378333166666664],
+    [-70.92572316666667, 41.379248833333335],
+    [-70.9238485, 41.38020983333333],
+    [-70.92196416666667, 41.381229],
+    [-70.920104, 41.3822515],
+    [-70.9182695, 41.383204666666664],
+    [-70.916446, 41.384088166666665],
+    [-70.91466183333333, 41.384961833333335],
+    [-70.9129075, 41.3858065],
+    [-70.911202, 41.38660816666667],
+    [-70.90957116666667, 41.3873755],
+    [-70.907991, 41.388140166666666],
+    [-70.90642916666667, 41.388874333333334],
+    [-70.90493066666667, 41.38954483333333],
+    [-70.90348433333334, 41.390161166666665],
+    [-70.902133, 41.3907685],
+    [-70.90078083333333, 41.39146733333333],
+    [-70.8993175, 41.3922555],
+    [-70.89778983333333, 41.393112],
+    [-70.8961395, 41.3939785],
+    [-70.89446233333334, 41.394910833333334],
+  ];
+
+  mockRouteData: any = [
+    [
+      -70.66886901855469,
+      41.48800607185427
+    ],
+    [
+      -70.68740844726562,
+      41.47617465855341
+    ],
+    [
+      -70.7080078125,
+      41.46434108514979
+    ],
+    [
+      -70.72723388671875,
+      41.45559314261393
+    ],
+    [
+      -70.74508666992188,
+      41.445299934803955
+    ],
+    [
+      -70.75881958007812,
+      41.43963797438235
+    ],
+    [
+      -70.79109191894531,
+      41.425223482352656
+    ],
+    [
+      -70.81443786621094,
+      41.415440397070626
+    ],
+    [
+      -70.83984375,
+      41.40308070920773
+    ],
+    [
+      -70.8673095703125,
+      41.393809400281555
+    ],
+    [
+      -70.89340209960938,
+      41.38814294931545
+    ],
+    [
+      -70.92018127441406,
+      41.38556712651267
+    ],
+    [
+      -70.93940734863281,
+      41.3850519497068
+    ],
+    [
+      -70.96138000488281,
+      41.3850519497068
+    ],
+    [
+      -70.97991943359375,
+      41.386597467879106
+    ],
+    [
+      -70.99571228027344,
+      41.38556712651267
+    ],
+    [
+      -71.02043151855467,
+      41.38350639479881
+    ],
+    [
+      -71.03485107421875,
+      41.38350639479881
+    ],
+    [
+      -71.05133056640625,
+      41.38453676881922
+    ],
+    [
+      -71.070556640625,
+      41.3850519497068
+    ],
+    [
+      -71.08772277832031,
+      41.38711263243966
+    ],
+    [
+      -71.10214233398438,
+      41.39071867007324
+    ],
+    [
+      -71.11656188964844,
+      41.393809400281555
+    ],
+    [
+      -71.13029479980469,
+      41.39689998354142
+    ],
+    [
+      -71.1419677734375,
+      41.398960290742316
+    ],
+    [
+      -71.15638732910156,
+      41.40514082047109
+    ],
+    [
+      -71.17149353027344,
+      41.410290812880795
+    ],
+    [
+      -71.19277954101562,
+      41.41183573100123
+    ],
+    [
+      -71.21063232421875,
+      41.41183573100123
+    ],
+    [
+      -71.22917175292969,
+      41.413895564677304
+    ]
+  ];
+
+  videoRoute1: any =[
+    [
+      -122.38494873046875,
+      47.615421267605434
+    ],
+    [
+      -122.45361328124999,
+      47.632081940263305
+    ],
+    [
+      -122.46734619140625,
+      47.663537612601345
+    ],
+    [
+      -122.44262695312501,
+      47.724544549099676
+    ],
+    [
+      -122.4481201171875,
+      47.78178908571313
+    ],
+    [
+      -122.464599609375,
+      47.879512933970496
+    ],
+    [
+      -122.4810791015625,
+      47.92738566360356
+    ],
+    [
+      -122.50579833984375,
+      47.94394667836214
+    ],
+    [
+      -122.56072998046875,
+      47.94946583788702
+    ],
+    [
+      -122.61016845703124,
+      47.98256841921405
+    ],
+    [
+      -122.62939453125001,
+      48.01381248943335
+    ],
+    [
+      -122.64587402343751,
+      48.125767833701666
+    ],
+    [
+      -122.69256591796876,
+      48.14776316994868
+    ],
+    [
+      -122.85186767578125,
+      48.19538740833338
+    ],
+    [
+      -123.0853271484375,
+      48.22467264956519
+    ],
+    [
+      -123.40118408203125,
+      48.213692646648035
+    ]
+  ];
+
+
+  videoRoute2: any = [
+    [
+      -126.55700683593749,
+      48.90805939965008
+    ],
+    [
+      -126.40319824218751,
+      48.82494916931076
+    ],
+    [
+      -125.4693603515625,
+      48.596592251456705
+    ],
+    [
+      -124.6783447265625,
+      48.46199462233164
+    ],
+    [
+      -124.31030273437499,
+      48.34894812401375
+    ],
+    [
+      -123.739013671875,
+      48.246625590713826
+    ],
+    [
+      -123.3984375,
+      48.213692646648035
+    ]
+  ];
+
+    vessel_markers: any = {
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: []
+    }
+  };
+
+  arrow_vectors: any = {
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: []
+    }
+  };
+
+  gps_markers: any = {
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: []
+    }
+  };
+
+  arrow_vectors_gps: any = {
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: []
+    }
+  };
+
+  vector_routes: any = {
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: []
+    }
+  };
+
+  routes: any = {
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      features: []
+    }
+  };
+
+  // properties of mapbox map
+  style = 'mapbox://styles/jruytenbeek/ckjdo1l5t6uj319ndvxuzmd8i';
+  initial_lng = -96;
+  initial_lat = 37.8;
+  position: any;
+
+
+  /*
+  showrouteplanning: boolean = false;
+   */
+
+  id: any;
+
+  table_headers: any = ['# of Waypoints', 'Start Time', 'Expected Finish Time', 'Average Speed', 'Total distance', 'Total time'];
+
+  /*
+  routeTable: FormGroup;
+   */
+  control: FormArray;
+  mode: boolean;
+  touchedRows: any;
+
+  /*
+  routepoints: any = {
+    'type': 'geojson',
+    'data': {
+      'type': 'Feature',
+      'properties': {},
+      'geometry': {
+        'type': 'LineString',
+        'coordinates': []
+      }
+    }
+  };
+   */
+
+  /*
+  waypoints: any = {
+    'type': 'geojson',
+    'data': {
+      'type': 'FeatureCollection',
+      'features': []
+    }
+  };
+
+  routes: any = {
+    'type': 'geojson',
+    'data': {
+      'type': 'FeatureCollection',
+      'features': []
+    }
+  };
+
+  raw_routes: any;
+
+  singleroute: any;
+
+  // TODO:  remove this when vesselview is deleted
+  showsingleroute: boolean = false;
+
+   */
+
+  aisData: any;
+
+  gpsData: any;
+
+
+
+  constructor(private route: ActivatedRoute, public _router: Router, /* public buoyservice:  BuoysService,*/ public mapService: MapService, public vesselservice: VesselsService, private fb: FormBuilder, private http: HttpClient, public auth: AuthService, public routeService: RoutesService, public dataService: DataService) {
+
+    this.auth.userProfile$.subscribe(res => this.id = res);
+/*
+    this.raw_routes = null;
+
+    this.singleroute = null;
+*/
+    this.aisData = {};
+
+    this.gpsData = {};
+
+    this.currentStep = 0;
+
+    this.currentGpsStep = 0;
+
+  }
+
+
+
+  ngOnInit() {
+
+    // TODO:  Remove this during refactor
+    const view = this.route.snapshot.params.view;
+    console.log(this.route.snapshot.params);
+    if (view == 'viewfleet'){
+      // this.reloadComponent();
+    }
+
+
+
+
+
+    this.map = new mapboxgl.Map({
+      container: 'map',
+      style: this.style,
+      zoom: 4,
+      center: [this.initial_lng, this.initial_lat]
+    });
+
+
+    // control used to show the user's location on the map
+    this.map.addControl(
+      new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true
+        },
+        trackUserLocation: true
+    }));
+
+    this.touchedRows = [];
+    /*
+    this.routeTable = this.fb.group({
+      tableRows: this.fb.array([])
+    });
+     */
+
+
+
+
+
+
+    this.map.on('load', (event) => {
+
+
+
+
+
+      // loadImage used to load icons
+      this.map.loadImage('../../assets/green_ping.png', (error, image) => {
+        this.map.addImage('green-marker', image);
+      });
+
+
+      this.map.loadImage('../../assets/buoy.png', (error, image) => {
+        this.map.addImage('buoy-base', image);
+      });
+
+
+      this.map.loadImage('../../assets/vessel-ais.png', (error, image) => {
+        this.map.addImage('vessel-marker', image);
+      });
+
+      this.map.loadImage('../../assets/arrow-vector.png', (error, image) => {
+        this.map.addImage('arrow-vector', image);
+      });
+
+      this.map.loadImage('../../assets/vessel-gps.png', (error, image) => {
+        this.map.addImage('gps-marker', image);
+      });
+
+      this.map.loadImage('../../assets/vessel-mock.png', (error, image) => {
+        this.map.addImage('gps-mock-marker', image);
+      });
+
+      // we declare each geojson object as a source
+      this.map.loadImage('../../../assets/waypoint.png', (error, image) => {
+        this.map.addImage('waypoint', image);
+      });
+
+      /*
+      this.map.addSource('buoy-updates', this.buoy_points);
+      this.map.addSource('buoy-bases', this.buoy_bases);
+      this.map.addSource('geofences', this.geofences);
+      */
+      this.map.addSource('vessel-markers', this.vessel_markers);
+      this.map.addSource('arrow-vectors', this.arrow_vectors);
+      this.map.addSource('gps-markers', this.gps_markers);
+      this.map.addSource('arrow-vectors-gps', this.arrow_vectors_gps);
+      this.map.addSource('vector-routes', this.vector_routes);
+      this.map.addSource('allroutes', this.routes);
+
+
+
+      // we add all the sources as layers on the map and give them the properties we need
+/*
+      this.map.addSource('route', this.routepoints);
+
+      this.map.addSource('waypoints', this.waypoints);
+
+      this.map.addSource('allroutes', this.routes);
+
+      this.map.addLayer({
+        'id': 'route',
+        'type': 'line',
+        'source': 'route',
+        'layout': {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        'paint': {
+          'line-color': '#888',
+          'line-width': 8
+        }
+      });
+
+      this.map.addLayer({
+        'id': 'waypoints',
+        'type': 'symbol',
+        'source': 'waypoints',
+        'layout': {
+          'icon-image': 'waypoint',
+          'icon-size': 0.1,
+          'icon-allow-overlap': true
+        }
+      });
+
+      this.map.addLayer({
+        'id': 'allroutes',
+        'type': 'line',
+        'source': 'allroutes',
+        'layout': {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        'paint': {
+          'line-color': '#175482',
+          'line-width': 5
+        }
+      })
+
+      this.map.on('click', (e) => {
+        if (this.showrouteplanning)
+        {
+          this.addRowNData(e.lngLat.lat, e.lngLat.lng);
+        }
+      });
+
+      this.map.on('click', 'allroutes', (e) => {
+
+        this.map.flyTo({
+          //@ts-ignore
+          center: e.features[0].geometry.coordinates[0],
+          zoom: 10
+        });
+        new mapboxgl.Popup()
+          //@ts-ignore
+          .setLngLat(e.features[0].geometry.coordinates[0])
+          .setHTML(e.features[0].properties.date)
+          .addTo(this.map);
+      });
+
+ */
+
+
+      // TODO:  This should be deleted during refactor
+      this.dataService.detailsSection.subscribe(detailsSection => {
+        if (detailsSection == 'viewfleet'){
+          // this.dataService.updateDetailsSection(null);
+          // this.reloadComponent();
+        }
+
+      });
+
+
+
+      // Subscribe to DataService, to get singleroute from fleetdetails.component.ts
+      /*
+      this.dataService.vesselId.subscribe(vesselId => {
+
+        this.singleroute = vesselId;
+
+        // If vesselId is not null, only show the single selected route
+        if(vesselId != null){
+
+          // TODO:  Probably shouldn't reset this here.  refactor.
+          this.routes = {
+            'type': 'geojson',
+            'data': {
+              'type': 'FeatureCollection',
+              'features': []
+            }
+          };
+
+          this.routeService.getRouteByVesselId(vesselId);
+        }
+        // If vesselId is null, show all routes
+        else if(vesselId === null){
+          this.routeService.loadAll();
+        }
+
+        }
+      );
+
+      // Subscribe to routes service
+      this.routeService.routes.subscribe(data => {
+
+        this.raw_routes = data;
+
+        data.forEach(savedroute => {
+
+          if (savedroute != "default")
+          {
+            let savedroutepoints = [];
+            //@ts-ignore
+            savedroute.routepoints.forEach(element => {
+              savedroutepoints.push([element.long, element.lat])
+            });
+
+            let route = {
+              'type': 'Feature',
+              'properties': {
+                //@ts-ignore
+                'date': savedroute.date_created
+              },
+              'geometry': {
+                'type': 'LineString',
+                //@ts-ignore
+                'coordinates': savedroutepoints
+              }
+            }
+            this.routes.data.features.push(route);
+            (this.map.getSource('allroutes') as mapboxgl.GeoJSONSource).setData(this.routes.data);
+          }
+        });
+      });
+
+       */
+
+      // TODO:  Delete this if we don't need to populate vessels from this page (currently populated from fleetdetails.component
+      this.vesselservice.vessels.subscribe(data => {
+        this.vessels = data;
+
+      });
+
+
+
+      // TODO:  Move "add layers" calls into a separate section, during refactor
+      /*
+      this.map.addLayer({
+          'id': 'buoy-updates',
+          'type': 'circle',
+          'source': 'buoy-updates',
+          'minzoom': 14,
+          'paint': {
+            // make circles larger as the user zooms from z12 to z22
+            'circle-radius': 7,
+
+            'circle-color': [
+              'match',
+              ['get', 'info'],
+              'in polygon',
+              '#28B463',
+              'not in polygon',
+              '#943126',
+              '#ccc'
+            ]
+            }
+
+      });
+
+
+
+      this.map.addLayer({
+        'id': 'buoy-bases',
+        'type': 'symbol',
+        'source': 'buoy-bases',
+        'layout': {
+          'icon-image': 'buoy-base',
+          'icon-size': 0.2,
+          'icon-allow-overlap': true
+        }
+      });
+
+      this.map.addLayer({
+        'id': 'geofences',
+        'type': 'fill',
+        'source': 'geofences',
+        'minzoom': 10,
+        'layout': {},
+        'paint': {
+          'fill-color': '#088',
+          'fill-opacity': 0.4
+      }});
+
+       */
+
+      this.map.addLayer({
+        id: 'vessel-markers',
+        type: 'symbol',
+        source: 'vessel-markers',
+        layout: {
+          'icon-image': ['get', 'icon'],
+          'icon-size': 0.5,
+          'icon-allow-overlap': true,
+          'icon-rotate': ['get', 'rotate'],
+        }
+      });
+
+      this.map.addLayer({
+        id: 'arrow-vectors',
+        type: 'symbol',
+        source: 'arrow-vectors',
+        layout: {
+          'icon-image': 'arrow-vector',
+          'icon-size': ['get', 'size'],
+          'icon-allow-overlap': true,
+          'icon-rotate': ['get', 'rotate'],
+          // 'text-offset': [5, 5],
+          // 'text-anchor': 'top'
+        }
+      });
+
+      this.map.addLayer({
+        id: 'gps-markers',
+        type: 'symbol',
+        source: 'gps-markers',
+        layout: {
+          'icon-image': ['get', 'icon'],
+          'icon-size': 0.5,
+          'icon-allow-overlap': true,
+          'icon-rotate': ['get', 'rotate'],
+        }
+      });
+
+      this.map.addLayer({
+        id: 'arrow-vectors-gps',
+        type: 'symbol',
+        source: 'arrow-vectors-gps',
+        layout: {
+          'icon-image': 'arrow-vector',
+          'icon-size': ['get', 'size'],
+          'icon-allow-overlap': true,
+          'icon-rotate': ['get', 'rotate'],
+          // 'text-offset': [5, 5],
+          // 'text-anchor': 'top'
+        }
+      });
+
+      this.map.addLayer({
+        id: 'vector-routes',
+        type: 'line',
+        source: 'vector-routes',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': 'white',
+          'line-width': 3
+        }
+      });
+
+      this.map.addLayer({
+        id: 'allroutes',
+        type: 'line',
+        source: 'allroutes',
+        layout: {
+          'line-join': 'round',
+          'line-cap': 'round'
+        },
+        paint: {
+          'line-color': 'white',
+          'line-dasharray': [4, 4],
+          'line-width': 2
+        }
+      });
+
+
+
+
+      let url = 'http://sailplanserver-env.eba-k83xnggg.us-east-1.elasticbeanstalk.com/ais/reset';
+      url = 'http://localhost:8000/ais/reset';
+      this.http.delete<any>(url).subscribe(
+        response => {
+          console.log('Clear AIS database');
+
+          // TODO:  Use async / await for showAisData, instead of putting all the code in showAisData?  Maybe subscribe instead?
+          // Subscribe to vessel AIS data
+          this.showAisData();
+
+
+        },
+        error => console.log('Error clearing AIS database', error)
+      );
+
+      url = 'http://sailplanserver-env.eba-k83xnggg.us-east-1.elasticbeanstalk.com/gps/reset';
+      url = 'http://localhost:8000/gps/reset';
+
+      this.http.delete<any>(url).subscribe(
+        response => {
+          console.log('Clear GPS database');
+
+          // TODO:  Use async / await for showAisData, instead of putting all the code in showAisData?  Maybe subscribe instead?
+          // Subscribe to vessel GPS data
+          this.showGpsData();
+
+
+        },
+        error => console.log('Error clearing AIS database', error)
+      );
+
+
+
+
+
+      // Subscribe to buoy data
+      /*
+      this.buoyservice.buoys.subscribe(data => {
+
+        this.buoys = data;
+        this.buoy_points.data.features = [];
+        this.buoy_bases.data.features = [];
+        this.geofences.data.features = [];
+
+
+        //for each buoy object, we want to add each buoy base to our buoy_base geojson object
+        for (let i = 0; i < this.buoys.length; i++)
+        {
+
+          if (this.buoys[i] != "default")
+          {
+            let buoy_base = {
+              'type': 'Feature',
+              'geometry': {
+                'type': 'Point',
+                'coordinates': [Number(this.buoys[i].baselong), Number(this.buoys[i].baselat)]
+              },
+              'properties': {
+                'nickname': this.buoys[i].nickname,
+                'status': this.buoys[i].status,
+                'radius': this.buoys[i].radius,
+                'last_update': this.buoys[i].last_update
+              }
+            };
+            this.buoy_bases.data.features.push(buoy_base);
+
+            //we make sure that the buoy has a data field named 'geofence' to get the points for that polygon
+            if (this.buoys[i].hasOwnProperty('geofence'))
+            {
+              let geofence = {
+                'type': 'Feature',
+                'geometry': {
+                  'type': 'Polygon',
+                  'coordinates': this.buoys[i].geofence
+                }
+              };
+              //push the new geofence to the 'geofences' geojson object
+              this.geofences.data.features.push(geofence);
+            }
+
+            //if the buoy has updates we push them using this for loop to the buoy_points geojson object
+            if (this.buoys[i].hasOwnProperty('updates'))
+            {
+              for (let j = 0; j < this.buoys[i].updates.length; j++)
+              {
+                let buoyFeature = {
+                  'type': 'Feature',
+                  'geometry': {
+                    'type': 'Point',
+                    'coordinates': [Number(this.buoys[i].updates[j].long), Number(this.buoys[i].updates[j].lat)]
+                  },
+                  'properties': {
+                    'time': this.buoys[i].updates[j].time,
+                    'info': this.buoys[i].updates[j].info
+                  }
+                }
+                this.buoy_points.data.features.push(buoyFeature);
+              }
+            }
+
+          }
+        }
+        //after refreshing the data, we reset the source to the same object but that now contains new data
+        (this.map.getSource('buoy-bases') as mapboxgl.GeoJSONSource).setData(this.buoy_bases.data);
+        (this.map.getSource('buoy-updates') as mapboxgl.GeoJSONSource).setData(this.buoy_points.data);
+        (this.map.getSource('geofences') as mapboxgl.GeoJSONSource).setData(this.geofences.data);
+
+
+      //load all is what triggers the constant polling for that data
+
+      });
+      this.buoyservice.loadAll();
+      */
+
+    /*
+      this.map.on('click', 'buoy-bases', ($event) => {
+        // @ts-ignore because there is an error associated to the type of geometry
+        this.map.flyTo({center: $event.features[0].geometry.coordinates, zoom: 5});
+        new mapboxgl.Popup({className: "buoybase-popup"})
+        // @ts-ignore
+        .setLngLat($event.features[0].geometry.coordinates)
+        .setHTML('<p>' + $event.features[0].properties.nickname + '</p>' + '<p> Last update: ' + $event.features[0].properties.last_update + '</p>'
+        + '<p> Geofence radius: ' + $event.features[0].properties.radius + ' m </p>'
+        + '<a href="/myinfrastructures">see more</a>')
+        .addTo(this.map);
+
+      });
+
+      this.map.on('click', 'buoy-updates', ($event) => {
+        new mapboxgl.Popup()
+        // @ts-ignore
+        .setLngLat($event.features[0].geometry.coordinates)
+        // @ts-ignore
+        .setHTML('<p> Received at: ' + $event.features[0].properties.time + '</p>')
+        .addTo(this.map);
+
+      });
+    */
+
+      // Click listener for AIS vessel
+      this.map.on('click', 'vessel-markers', ($event) => {
+
+        const tableHtml = this.createTableFromList(JSON.parse($event.features[0].properties.data));
+
+        // @ts-ignore because there is an error associated to the type of geometry
+        this.map.flyTo({center: $event.features[0].geometry.coordinates/*, zoom: 5*/});
+        new mapboxgl.Popup({className: 'ais-popup'})
+          // @ts-ignore
+          .setLngLat($event.features[0].geometry.coordinates)
+          .setHTML(tableHtml)
+          .addTo(this.map);
+
+      });
+
+      // Click listener for GPS vessel
+      this.map.on('click', 'gps-markers', ($event) => {
+
+        const tableHtml = this.createTableFromList(JSON.parse($event.features[0].properties.data));
+
+        // @ts-ignore because there is an error associated to the type of geometry
+        this.map.flyTo({center: $event.features[0].geometry.coordinates/*, zoom: 5*/});
+        new mapboxgl.Popup({className: 'ais-popup'})
+          // @ts-ignore
+          .setLngLat($event.features[0].geometry.coordinates)
+          .setHTML(tableHtml)
+          .addTo(this.map);
+
+      });
+
+
+    });
+
+
+
+    this.mapService.mapFocus.subscribe(latLongObject => {
+
+      if (latLongObject != null) {
+        this.mapFocus(latLongObject, 8);
+      }
+    });
+
+
+
+
+    var line = turf.lineString(this.videoRoute2);
+
+    var chunk = turf.lineChunk(line, 15, {units: 'miles'});
+
+    let tempRoute = [];
+    chunk.features.forEach((element) => {
+      element.geometry.coordinates.forEach((latLongObj) => {
+        tempRoute.push(latLongObj);
+      });
+    });
+    console.log(tempRoute);
+
+
+  }
+
+  // TODO:  Not sure what this was for, ask enzo?
+  // ngAfterViewInit(){
+  //   this.control = this.routeTable.get('tableRows') as FormArray;
+  // }
+  /*
+    initiateForm(lat, long): FormGroup {
+      const control =  this.routeTable.get('tableRows') as FormArray;
+      if (control.controls.length > 0 && lat && long)
+      {
+        var distance = this.getDistanceFromLatLonInNM(control.controls[control.controls.length - 1].value.lat, control.controls[control.controls.length - 1].value.long, lat, long);
+        var time: number = distance / control.controls[control.controls.length - 1].value.speed;
+      }
+      else
+      {
+        var distance = 0;
+        var time: number = 0;
+      }
+      return this.fb.group({
+        lat: [lat, Validators.required],
+        long: [long, [Validators.required]],
+        speed: ['30', [Validators.required]],
+        dist: [distance],
+        time: [time],
+        isEditable: [true]
+      });
+    }
+
+
+    addRow() {
+      if (this.routeTable.valid)
+      {
+        let control =  this.routeTable.get('tableRows') as FormArray;
+
+        if (control.controls.length > 0)
+        {
+          if (control.controls[control.controls.length - 1].value.isEditable && control.controls[control.controls.length - 1].status == "VALID")
+          {
+
+            this.doneRow(this.getFormControls.controls[control.controls.length - 1] as FormGroup)
+
+          }
+        }
+        control.push(this.initiateForm('', ''));
+
+
+      }
+      else
+      {
+        alert("Input lat, long, and speed to proceed")
+      }
+    }
+
+    addRowNData(lat, long) {
+
+      const control =  this.routeTable.get('tableRows') as FormArray;
+
+      if (this.routeTable.valid)
+      {
+        const control =  this.routeTable.get('tableRows') as FormArray;
+
+        let point = {
+          'type': 'Feature',
+          'geometry': {
+            'type': 'Point',
+            'coordinates': [long, lat]
+          }
+        };
+
+
+        this.waypoints.data.features.push(point);
+        (this.map.getSource('waypoints') as mapboxgl.GeoJSONSource).setData(this.waypoints.data);
+        if (control.controls.length > 0)
+        {
+          if (control.controls[control.controls.length - 1].value.isEditable && control.controls[control.controls.length - 1].status == "VALID")
+          {
+            this.doneRow(this.getFormControls.controls[control.controls.length - 1] as FormGroup)
+
+          }
+        }
+
+        this.routepoints.data.geometry.coordinates.push([long, lat])
+
+        if (this.routepoints.data.geometry.coordinates.length > 1)
+        {
+          (this.map.getSource('route') as mapboxgl.GeoJSONSource).setData(this.routepoints.data);
+        }
+
+        control.push(this.initiateForm(lat, long));
+      }
+      else
+      {
+        alert("Input lat, long, and speed to proceed")
+      }
+    }
+
+    isLastRow(index: number){
+
+      const control =  this.routeTable.get('tableRows') as FormArray;
+
+      if (index == control.controls.length - 1)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+
+    deleteRow(index: number) {
+
+      const control =  this.routeTable.get('tableRows') as FormArray;
+
+      if (index == control.controls.length - 1)
+      {
+        control.removeAt(index);
+
+
+
+        if (this.routepoints.data.geometry.coordinates.length == control.controls.length + 1)
+        {
+          this.routepoints.data.geometry.coordinates.pop();
+          (this.map.getSource('route') as mapboxgl.GeoJSONSource).setData(this.routepoints.data);
+
+        }
+
+
+        this.waypoints.data.features.pop();
+        (this.map.getSource('waypoints') as mapboxgl.GeoJSONSource).setData(this.waypoints.data);
+      }
+      else
+      {
+        alert("Remove next points on route in order to remove this point");
+      }
+
+      if (control.controls.length == 0)
+      {
+        this.showrouteplanning = false;
+      }
+    }
+
+
+
+    doneRow(group: FormGroup) {
+
+      const control =  this.routeTable.get('tableRows') as FormArray;
+      if (this.routeTable.valid)
+      {
+        group.get('isEditable').setValue(false);
+
+        if (control.controls.length > 0 && control.controls.length != this.routepoints.data.geometry.coordinates.length)
+        {
+
+          this.routepoints.data.geometry.coordinates.push([control.controls[control.controls.length - 1].value.long, control.controls[control.controls.length - 1].value.lat])
+          console.log(this.routepoints.data.geometry.coordinates.length);
+          if (control.controls.length > 1)
+          {
+            (this.map.getSource('route') as mapboxgl.GeoJSONSource).setData(this.routepoints.data);
+          }
+        }
+
+
+        if (control.controls.length != this.waypoints.data.features.length - 1)
+        {
+
+          let point = {
+            'type': 'Feature',
+            'geometry': {
+              'type': 'Point',
+              'coordinates': [control.controls[control.controls.length - 1].value.long, control.controls[control.controls.length - 1].value.lat]
+            }
+          };
+
+          this.waypoints.data.features.push(point);
+          (this.map.getSource('waypoints') as mapboxgl.GeoJSONSource).setData(this.waypoints.data);
+        }
+
+      }
+      else
+      {
+        alert("One or more fields are missing. Please be sure to complete all fields")
+      }
+
+    }
+
+
+    saveUserDetails() {
+      console.log(this.routeTable.value);
+    }
+
+    // TODO:  Is this improper angular code?  If I remove the first "get", it breaks the methods addRow and addRowNData (and dashboard fails to load)
+    get getFormControls() {
+      const control = this.routeTable.get('tableRows') as FormArray;
+      return control;
+    }
+
+    submitForm() {
+      const control = this.routeTable.get('tableRows') as FormArray;
+      this.touchedRows = control.controls.filter(row => row.touched).map(row => row.value);
+      if (this.routeTable.valid && control.controls.length > 0)
+      {
+        console.log(this.routeTable.value.tableRows)
+        this.http.post<any>('http://localhost:8000/vessels/addroute', {userid: this.id.sub, route: this.routeTable.value.tableRows}).subscribe(
+          response => {
+            console.log(response);
+            this.routeService.loadAll();
+
+          },
+          error => console.log('error creating route')
+        );
+        this.showrouteplanning = false;
+        this.map.removeLayer('waypoints');
+        this.map.removeLayer('route');
+
+        let i = 0;
+        control.controls.forEach((element) => {
+          control.removeAt(i);
+          i++;
+        });
+        this.routepoints.data.geometry.coordinates = [];
+        this.waypoints.data.features = [];
+
+
+      }
+      else
+      {
+        alert('Make sure that all fields are complete before submitting route')
+      }
+    }
+
+    toggleTheme() {
+      this.mode = !this.mode;
+    }
+
+    getDistanceFromLatLonInNM(lat1,lon1,lat2,lon2) {
+      var R = 6371; // Radius of the earth in km
+      var dLat = this.deg2rad(lat2-lat1);  // deg2rad below
+      var dLon = this.deg2rad(lon2-lon1);
+      var a =
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      var d = R * c /1.852; // Distance in nautical miles
+      return d;
+    }
+
+    deg2rad(deg) {
+      return deg * (Math.PI/180)
+    }
+
+    showPlanning(){
+      this.showrouteplanning = true;
+    }
+*/
+
+  mapFocus(latLongObject, zoomLevel = 5){
+    this.map.flyTo({
+      center: [latLongObject.long, latLongObject.lat],
+      zoom: zoomLevel
+    });
+  }
+
+
+  getCoordinates() {
+    return new Promise(function(resolve, reject) {
+      navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+  }
+
+  // TODO:  We can probably delete reloadComponent now
+  reloadComponent() {
+    const currentUrl = this._router.url;
+    this._router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this._router.onSameUrlNavigation = 'reload';
+    this._router.navigate([currentUrl]);
+  }
+
+  showAisData(){
+
+    // this.http.post<any>('http://localhost:8000/ais/populate-initial-ais', {userid: this.id.sub}).subscribe(
+    //   response2 => {
+    //     console.log(response2);
+    //   },
+    //   error => console.log('error getting AIS data', error)
+    // );
+
+
+
+    // Zoom into sample AIS vessel location by default
+    const latLongObject = {lat: 43.11443166666667, long: -70.61588833333333};
+    // latLongObject = {lat: lat_y, long: long_x};  // Sample AIS vessel location
+
+    // this.mapFocus(latLongObject, 10);
+
+    const intervalFunction = () => {
+
+      // if(this.currentStep === 9){
+      //   this.currentStep = 0;
+      // }
+
+      // End interval after a certain number of steps
+      if (this.currentStep >= 200){
+        clearInterval(aisInterval);
+      }
+
+      this.currentStep++;
+
+      this.http.post<any>('http://localhost:8000/ais', {userid: this.id.sub/*, currentStep: this.currentStep*/}).subscribe(
+        response => {
+
+          console.log('aisResponse: ', response);
+          const aisResponse = response;
+
+          // Group AIS data results by ID
+          // const allAisData = Array.from(new Set(aisResponse.map(a => a.id)))
+          //   .map(id => {
+          //     return aisResponse.find(a => a.id === id);
+          //   });
+          //
+          // this.aisData = allAisData;
+
+          this.aisData = aisResponse;
+
+          this.vessel_markers.data.features = [];
+          this.arrow_vectors.data.features = [];
+
+          aisResponse.forEach((aisObject) => {
+
+            const lat_y = Number(aisObject.y);
+            const long_x = Number(aisObject.x);
+
+            // const aisObject = aisResponse;
+
+            let iconType = '';
+            if (aisObject.type >= 1 && aisObject.type <= 3){
+              iconType = 'vessel-marker';
+            }
+            else if (aisObject.type === 21){
+              iconType = 'buoy-base';
+            }
+            else{
+              iconType = 'vessel-marker';
+            }
+            let vesselOrientation = 0;
+
+            if (aisObject.hasOwnProperty('true_heading') && aisObject.true_heading !== 511){
+              vesselOrientation = aisObject.true_heading;
+            }
+            else if (aisObject.hasOwnProperty('cog')){
+              vesselOrientation = aisObject.cog;
+            }
+            else{
+              vesselOrientation = 0;
+            }
+
+            const aisVessel = {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [long_x, lat_y]
+              },
+              properties: {
+                data: aisObject,
+                icon: iconType,
+                rotate: vesselOrientation
+              }
+            };
+            this.vessel_markers.data.features.push(aisVessel);
+
+            // Assume average speed over ground is 20.  Start with 20 and divide by some multiplier
+            const vectorMultiplier = 0.4;
+            let vectorSize = ((aisObject.sog / 20) * vectorMultiplier);
+            vectorSize = .2;
+
+            if (aisObject.hasOwnProperty('cog') && aisObject.sog >= 1) {
+              const arrowVector = {
+                type: 'Feature',
+                geometry: {
+                  type: 'Point',
+                  coordinates: [long_x, lat_y]
+                },
+                properties: {
+                  rotate: aisObject.cog - 90,
+                  size: vectorSize
+                }
+                // 'properties': aisResponse[this.currentStep]
+              };
+              this.arrow_vectors.data.features.push(arrowVector);
+
+            }
+            else{
+              // TODO:  Remove this
+              // this.arrow_vectors.data.features.push({});
+            }
+          });
+
+          (this.map.getSource('vessel-markers') as mapboxgl.GeoJSONSource).setData(this.vessel_markers.data);
+
+          (this.map.getSource('arrow-vectors') as mapboxgl.GeoJSONSource).setData(this.arrow_vectors.data);
+
+
+
+          // const latLongObject = {lat: lat_y, long: long_x};  // Sample AIS vessel location
+          //
+          // this.mapFocus(latLongObject, 5);
+
+
+
+        },
+        error => console.log('error getting AIS data', error)
+      );
+
+
+
+    };
+
+    const aisInterval = setInterval(intervalFunction, 1000);
+
+
+  }
+
+
+
+
+  showGpsData(){
+
+    // this.http.post<any>('http://localhost:8000/gps/populate-initial-gps', {userid: this.id.sub}).subscribe(
+    //   response2 => {
+    //     console.log(response2);
+    //   },
+    //   error => console.log('error getting GPS data', error)
+    // );
+
+
+
+    // Zoom into sample GPS vessel location by default
+    const latLongObject = {lat: 41.3492835, long: -70.993022};
+    // latLongObject = {lat: lat_y, long: long_x};  // Sample GPS vessel location
+
+    // TODO:  Uncomment this
+    //////////////////////// this.mapFocus(latLongObject, 8);
+
+    const intervalFunction = () => {
+
+      // if(this.currentGpsStep === 9){
+      //   this.currentGpsStep = 0;
+      // }
+
+      // End interval after a certain number of steps
+      if (this.currentGpsStep >= 200){
+        clearInterval(gpsInterval);
+      }
+
+      this.currentGpsStep++;
+
+      this.http.post<any>('http://localhost:8000/gps', {userid: this.id.sub/*, currentStep: this.currentGpsStep*/}).subscribe(
+        response => {
+
+          console.log('gpsResponse: ', response);
+          const gpsResponse = response;
+
+          // Group GPS data results by ID
+          // const allGpsData = Array.from(new Set(gpsResponse.map(a => a.id)))
+          //   .map(id => {
+          //     return gpsResponse.find(a => a.id === id);
+          //   });
+          //
+          // this.gpsData = allGpsData;
+
+          this.gpsData = [gpsResponse];
+
+
+          this.gps_markers.data.features = [];
+          this.arrow_vectors_gps.data.features = [];
+          this.vector_routes.data.features = [];
+          this.routes.data.features = [];
+
+
+
+          gpsResponse.forEach((gpsObject) => {
+
+            let step = Math.round(gpsObject.timestamp / 40);
+
+            // Added +1 so the line doesn't overlap with the vessel icon.
+            const mockRouteData = this.mockRouteData.slice(step);
+            let route = {
+              type: 'Feature',
+              properties: {
+                // 'date': savedroute.date_created
+              },
+              geometry: {
+                type: 'LineString',
+                coordinates: mockRouteData
+              }
+            };
+
+            this.routes.data.features.push(route);
+
+            let mockCog = 225;
+
+            if (step >= 8){
+              mockCog = 250 + step;
+            }
+
+            const mockGpsVessel = {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: mockRouteData[0]
+              },
+              properties: {
+                // data: gpsObject,
+                rotate: mockCog,
+                icon: 'gps-mock-marker'
+              }
+            };
+
+            this.gps_markers.data.features.push(mockGpsVessel);
+
+
+
+
+
+            step = Math.round(gpsObject.timestamp / 20);
+
+            // Added +1 so the line doesn't overlap with the vessel icon.
+            const routeData = this.routeData.slice(step + 1);
+            route = {
+              type: 'Feature',
+              properties: {
+                // 'date': savedroute.date_created
+              },
+              geometry: {
+                type: 'LineString',
+                coordinates: routeData
+              }
+            };
+
+            this.routes.data.features.push(route);
+            (this.map.getSource('allroutes') as mapboxgl.GeoJSONSource).setData(this.routes.data);
+
+
+
+            gpsObject.y = gpsObject.latitude;
+            gpsObject.x = gpsObject.longitude;
+
+            const lat_y = Number(gpsObject.y);
+            const long_x = Number(gpsObject.x);
+
+            // Turfjs route line projection
+/*
+            let aisTargetCoord = [long_x, lat_y];
+            var point = turf.point(aisTargetCoord);
+            var sog = 20 // take from AIS (assuming in knts per hour)
+            var bearing = gpsObject.cog; // take from AIS
+            var time = 60; // entered in minutes
+// I am using minutes for time in this example. This should ideally be entered by the user later on but we can hard code something for now
+            var timeHrs = time/60; // convert minutes to hours.
+            var distance = timeHrs*sog;
+            var destination = turf.destination(point, distance, bearing, {units: 'miles'});
+
+            const vectorRoute = {
+              'type': 'Feature',
+              'properties': {},
+              'geometry': {
+                'type': 'LineString',
+                'coordinates': [aisTargetCoord, destination.geometry.coordinates]
+              }
+            };
+
+            this.vector_routes.data.features.push(vectorRoute);
+
+            (this.map.getSource('vector-routes') as mapboxgl.GeoJSONSource).setData(this.vector_routes.data);
+
+
+ */
+            const gpsVessel = {
+              type: 'Feature',
+              geometry: {
+                type: 'Point',
+                coordinates: [long_x, lat_y]
+              },
+              properties: {
+                data: gpsObject,
+                rotate: gpsObject.cog,
+                icon: 'gps-marker'
+              }
+            };
+
+            this.gps_markers.data.features.push(gpsVessel);
+
+            this.vesselservice.updateGpsVesselList(this.gps_markers.data.features);
+
+
+/*
+            // Assume average speed over ground is 20.  Start with 20 and divide by some multiplier
+            const vectorMultiplier = 0.4;
+            const vectorSize = ((gpsObject.sog / 60) * vectorMultiplier);
+
+            if (gpsObject.hasOwnProperty('cog') && gpsObject.sog >= 1) {
+              const arrowVector = {
+                type: 'Feature',
+                geometry: {
+                  type: 'Point',
+                  coordinates: [long_x, lat_y]
+                },
+                properties: {
+                  rotate: gpsObject.cog - 90,
+                  size: vectorSize
+                }
+                // 'properties': gpsResponse[this.currentGpsStep]
+              };
+              this.arrow_vectors_gps.data.features.push(arrowVector);
+
+            }
+            else{
+              // TODO:  Remove this
+              // this.arrow_vectors_gps.data.features.push({});
+            }
+
+
+ */
+
+
+          });
+
+          (this.map.getSource('gps-markers') as mapboxgl.GeoJSONSource).setData(this.gps_markers.data);
+
+          // (this.map.getSource('arrow-vectors-gps') as mapboxgl.GeoJSONSource).setData(this.arrow_vectors_gps.data);
+
+          // const latLongObject = {lat: lat_y, long: long_x};  // Sample GPS vessel location
+          //
+          // this.mapFocus(latLongObject, 5);
+
+
+
+        },
+        error => console.log('error getting GPS data', error)
+      );
+
+
+
+    };
+
+    const gpsInterval = setInterval(intervalFunction, 500);
+
+
+  }
+
+
+
+  // TODO:  Should we move this to a helper file?
+  createTableFromList(json) {
+
+    let tableHtml = '<table>';
+
+    for (let [key, value] of Object.entries(json)) {
+      if (key == '_id' || key == '__v'){
+        continue;
+      }
+      else if (key == 'x'){
+        key = 'longitude';
+      }
+      else if (key == 'y'){
+        key = 'latitude';
+      }
+      tableHtml += '<tr><td>' + key + '</td><td>' + value + '</td></tr>';
+    }
+
+    tableHtml += '</table>';
+    return tableHtml;
+  }
+
+}
+
+
+

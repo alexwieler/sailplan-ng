@@ -1,0 +1,32 @@
+<div id="myfleet" *ngIf="!singlevesselview">
+
+
+    <div id="vessels-list">
+        <div *ngFor="let vessel of vessels" class="vessel-item" (click)='showsinglevessel(vessel)'>
+            <div class="vessel-info">
+                <p class="vessel-nickname">{{ vessel.nickname }}</p>
+                <div class="section">
+                    <p class="section-name">status: </p>
+                    <p class="section-info">{{ vessel.status }}</p>
+                </div>
+                <div class="section">
+                    <p class="section-name lastupdate">last update: </p>
+                    <p class="section-info">{{ vessel.last_update }}</p>
+                </div>
+            </div>
+            
+        </div>
+        <br>
+        <div id="addbutton">
+            <button mat-flat-button *ngIf="!showform" (click)="show()">Add Vessel</button>            
+        </div>
+    </div>
+    <br>
+    <div *ngIf="showform" id="vessel-form">
+        <app-vesselform></app-vesselform>
+    </div>  
+</div>
+<div *ngIf="singlevesselview" id="singleview">
+    <div class="toolbar-icon"><a routerLink="/myfleet" (click)=showallvessels()><img src="../../assets/back.png" width="30"></a></div>
+    <app-vesselview id="singlecontainer" [vessel]="this.singlevessel"></app-vesselview>
+</div>

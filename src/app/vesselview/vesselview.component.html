@@ -1,0 +1,116 @@
+<div id="title">
+    <h2>{{ this.vessel.nickname }}</h2>
+</div>
+
+<div id="map" class="map-container"></div>    
+
+<div id="routebutton" *ngIf="!this.showrouteplanning">
+    <button mat-flat-button (click)="showPlanning()">Add a route</button>
+</div>
+<br>
+
+<div id="planroute" *ngIf="this.showrouteplanning">
+
+    <form [formGroup]="routeTable" id="routetable">
+        <table class="table table-border" [ngClass]="{'table-dark': mode}">
+        <thead class="text-nowrap">
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Speed (knots)</th>
+            <th>Distance from previous point (nm)</th>
+            <th>Time from previous point (h-m-s)</th>
+            <th></th>
+        </thead>
+        <tbody>
+            <ng-container formArrayName="tableRows" *ngFor="let group of getFormControls.controls ; let i=index">
+            <tr *ngIf="group.get('isEditable').value" [formGroupName]="i">
+                <td>
+                <mat-form-field>
+                    <input matInput type="text" formControlName="lat">
+                </mat-form-field>
+                </td>
+                <td>
+                <mat-form-field>
+                    <input matInput type="tetx" formControlName="long">
+                </mat-form-field>
+                </td>
+                <td>
+                <mat-form-field>
+                    <input matInput type="text" formControlName="speed">
+                </mat-form-field>
+                </td>
+                <td>
+                    {{group.get('dist').value | number : '1.2-2'}}
+                </td>
+                <td>   
+                    {{group.get('time').value}}
+                </td>
+                <td>
+                <mat-icon class="delete" (click)="deleteRow(i)">delete_forever</mat-icon>
+                <mat-icon class="done" (click)="doneRow(group)">done</mat-icon>
+                </td>
+            </tr>
+            <tr *ngIf="!group.get('isEditable').value">
+                <td>
+                    {{group.get('lat').value}}
+                </td>
+                <td>
+                    {{group.get('long').value}}
+                </td>
+                <td>
+                    {{group.get('speed').value}}
+                </td>
+                <td>
+                    {{group.get('dist').value | number : '1.2-2'}}
+                </td>
+                <td>
+                    {{group.get('time').value}}
+                </td>
+                <td>
+                    <div *ngIf="isLastRow(i)">
+                        <mat-icon class="delete" (click)="deleteRow(i)">delete_forever</mat-icon>     
+                    </div>    
+                </td>
+            </tr>
+            </ng-container>
+        </tbody>
+        </table>
+    </form>
+</div>
+<div class="action-container" *ngIf="this.showrouteplanning">
+    <button mat-raised-button type="submit" (click)="addRow()">Add row</button>
+    <br>
+    <button mat-raised-button type="submit" (click)="submitForm()">Submit</button>
+</div>
+
+
+<div id="routes-container" *ngIf="!this.showrouteplanning">
+    <table id="allroutes" *ngIf="this.raw_routes != 'default'">
+        <tr>
+            <th *ngFor="let column of this.table_headers">
+                {{ column }}
+            </th>
+        </tr>
+        <tr *ngFor = "let route of this.raw_routes" (click)="routeFocus(route)">
+            <td>
+                {{ route.routepoints.length | json }}
+            </td>
+            <td>
+                Input your start time
+            </td>
+            <td>
+                Input start time first
+            </td>
+            <td>
+                {{ route.averagespeed | json | number : '1.2-2'}}
+            </td>
+            <td>
+                {{ route.totaldistance | number : '1.2-2'}}
+            </td>
+            <td>
+                {{ route.totaltime | number : '1.2-2'}}
+            </td>
+        </tr>
+    </table>
+
+</div>

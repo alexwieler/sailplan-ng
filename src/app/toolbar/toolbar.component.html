@@ -1,0 +1,76 @@
+<div id="sailplan-logo">
+    <!--<img src="../../assets/SailPlanLogoLight.png" width="175px">-->
+</div>
+<div id="sideflex">
+  <div class="side-links">
+
+    <!-- TODO:  Move "Show Map" button to a better place -->
+    <!--<div class="side-link1">
+        <div style="text-align:center;font-size:20px;padding: 10px 15px;">
+          <button *ngIf="this.showMap" (click)="this.toggleShowMap()" class="btn btn-primary" class="hideMap">Hide Map</button>
+          <button *ngIf="!this.showMap" (click)="this.toggleShowMap()" class="btn btn-primary" class="showMap">Show Map</button>
+        </div>
+
+    </div>-->
+
+
+    <div class="side-link1">
+      <a routerLink="/dashboard">
+        <img src="../../assets/images/dashboard-icon.png" width="30px">
+        <p>Dashboard</p>
+      </a>
+    </div>
+    <div class="side-link2">
+      <a routerLink="/myfleet">
+        <img src="../../assets/images/fleet-icon.png" width="30px">
+        <p>Edit fleet</p>
+      </a>
+    </div>
+
+  <!--
+    <div class="side-link3">
+      <a routerLink="/myinfrastructures">
+        <img src="../../assets/images/infra-icon.png" height="35px">
+        <p>Edit infrastructures</p>
+      </a>
+    </div>
+  -->
+
+<!-- This "view fleet" button has a bug where the fleetdetails section does not show when switching back and forth from dashboard.  The top menu works and is a replacement for this button -->
+  <!--
+    <div class="side-link3">
+      <a routerLink="/dashboard/viewfleet">
+        <img src="../../assets/images/infra-icon.png" height="35px">
+        <p>View Fleet</p>
+      </a>
+    </div>
+  -->
+  <!--
+    <div class="side-link3">
+      <a routerLink="/dashboard/viewbuoys">
+        <img src="../../assets/images/infra-icon.png" height="35px">
+        <p>View Buoys</p>
+      </a>
+    </div>
+  -->
+
+          <div class="side-link4">
+              <a routerLink="/dashboard">
+                  <img src="../../assets/images/account-icon.png" width="30px">
+                  <p>Account</p>
+              </a>
+          </div>
+          <div class="side-link5">
+              <a routerLink="/dashboard">
+                  <img src="../../assets/images/settings-icon.png" width="30px">
+                  <p>Settings</p>
+              </a>
+          </div>
+          <div class="side-link6">
+              <a href="#" (click)="auth.logout()">
+                  <img src="../../assets/images/logout-icon.png" width="30px">
+                  <p>Logout</p>
+              </a>
+          </div>
+      </div>
+  </div>

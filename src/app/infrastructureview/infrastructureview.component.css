@@ -1,0 +1,50 @@
+#infraview{
+    margin-left: 2%;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+}
+#title h2{
+    display: inline-block;
+    margin-left: 0%;
+    margin-top: 15px;
+    font-size: 28px;
+}
+
+#map{
+    width: 50%;
+    height: 50%;
+    display: inline-block;
+    margin-left: 2%;
+}
+
+#info{
+    display: inline-block;
+    margin-left: 0%;
+    margin-top: 2%;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#updates-table{
+    font-family: "Trebuchet MS", Arial, Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    margin-bottom: 100px;
+}
+
+#updates-table td, #updates-table th{
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#updates-table tr:nth-child(even){background-color: #f2f2f2;}
+
+#updates-table tr:hover{background-color: #ddd;}
+
+#updates-table th{
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: rgb(105, 105, 105);
+    color: white;
+}

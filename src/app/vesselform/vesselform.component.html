@@ -1,0 +1,43 @@
+
+<form [formGroup]="vesselform" (ngSubmit)="onSubmit()" class="vessel-form">
+
+  <div class="form-group">
+    <label for="nickname">Vessel name</label>
+    <input id="nickname" type="text" formControlName="nickname" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="vesselId">Vessel ID (GPS Vessel API_KEY)</label>
+    <input id="vesselId" type="text" formControlName="vesselId" class="form-control">
+  </div>
+
+
+  <div class="form-group">
+    <label for="country">Country</label>
+    <select id="country" formControlName="country" class="form-control">
+      <option value="usa">United States</option>
+      <option value="spain">Spain</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="captain">Captain</label>
+    <input id="captain" type="text" formControlName="captain" class="form-control">
+  </div>
+
+  <div class="form-group">
+    <label for="period">Update period (seconds)</label>
+    <input id="period" type="text" formControlName="period" class="form-control">
+  </div>
+
+  <button type="submit" class="btn btn-primary">Save Vessel</button>
+</form>
+
+<pre *ngIf="responseJson">
+    <h2>Vessel added to your account. <br>Save the API key bellow to connect to it</h2>
+    <p>{{ responseJson.vesselId }}</p>
+</pre>
+
+<pre *ngIf="error_msg">
+    <p> {{ error_msg }}</p>
+</pre>

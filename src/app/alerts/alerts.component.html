@@ -1,0 +1,23 @@
+<div class="alerts-container">
+<!--  TODO:  Should we control alerts visibility using this variable? -->
+
+<!-- I recommend using *ngFor if needed. If we need to hide/show (toggle) the alert window, its ok to use *ngFor, followed by the condition, a boolean. 
+  Another thing we can make use, for example, if there are no alerts, show a "now alerts" message. The following code is an example on how to do this:
+  
+  <div *ngIf="thereAreUnreadAlerts"; else noAlertsBlock">Alerts go here</div>
+  <ng-template #noAlertsBlock>There are no alerts.</ng-template>
+   
+  (Amalfi)
+
+-->
+
+
+<!--  *ngIf="this.viewalerts" -->
+
+  <h4>Alerts</h4>
+    <div class="alert-detail" *ngFor="let alert of alerts">
+      <div (click)="focusVessel(alert.vesselId)">{{alert.message}} - <small>{{alert.sensorType | titlecase}}</small></div>
+    </div>
+
+<!--  TODO: Alerts will be pulled from the server and shown in a table here.  Alerts should be dismissable, and route to the vessel/infrastructure in question on the map. -->
+</div>

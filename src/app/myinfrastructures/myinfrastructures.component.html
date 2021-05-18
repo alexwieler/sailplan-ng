@@ -1,0 +1,49 @@
+
+
+<div id="mybuoys" *ngIf="!this.singleinfrastructureview">
+
+    <div id="buoys-list">    
+        <div *ngFor="let buoy of buoys" class="buoy-item" (click)='showsingleinfrastructure(buoy)'>
+            <div class="buoy-info">
+                <p class="buoy-nickname">{{ buoy.nickname }}</p>
+                <div class="section">
+                    <p class="section-name">base position: </p>
+                    <p class="section-info">{{ buoy.baselat }}, {{ buoy.baselong }}</p>
+                </div>
+                <div class="section">
+                    <p class="section-name">status: </p>
+                    <p class="section-info">{{ buoy.status }}</p>
+                </div>
+                <div class="section">
+                    <p class="section-name">last update: </p>
+                    <p class="section-info">{{ buoy.last_update }}</p>
+                </div>
+                <div class="section">
+                    <p class="section-name">geofence radius: </p>
+                    <p class="section-info">{{ buoy.radius }} meters</p>
+                </div>
+                <div class="section">
+                    <p class="section-name">update period: </p>
+                    <p class="section-info">{{ buoy.period }} seconds</p>
+                </div>
+                <div class="section">
+                    <p class="section-name">api key: </p> 
+                    <p class="section-info">{{ buoy.apikey }}</p>
+                </div>
+            </div>
+            
+        </div>
+        <br>
+        <div id="addbutton">
+            <button mat-flat-button color="accent" *ngIf="!showform" (click)="show()">Add Infrastructure</button>            
+        </div>
+    </div>
+    <br>
+    <div *ngIf="showform" id="buoy-form">
+        <app-infrastructureform></app-infrastructureform>
+    </div>  
+</div>
+<div *ngIf="singleinfrastructureview" id="singleview">
+    <div class="toolbar-icon"><a routerLink="/myinfrastructures" (click)=showallinfrastructures()><img src="../../assets/back.png" width="30"></a></div>
+    <app-infrastructureview id="singlecontainer" [infrastructure]="this.singleinfrastructure"></app-infrastructureview>
+</div>

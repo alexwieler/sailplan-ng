@@ -1,0 +1,213 @@
+.navbar{
+    grid-area: header;
+    background-color: #283844;
+    color: rgb(255, 255, 255);
+}
+
+.navbar h1{
+    font-size: 25px;
+    padding-top: 5px;
+    font-family: 'Varela Round', sans-serif;
+}
+
+.sidebar{
+    grid-area: sidebar;
+    background-color: #1D262D;
+    color: white;
+}
+
+
+.fleetview{
+    grid-area: main;
+    overflow-y: auto;
+}
+
+.footer{
+    grid-area: footer;
+    background-color: #152035;
+    color: white;
+}
+
+.grid-container{
+    display: grid;
+    grid-template-columns: 210px auto;
+    grid-template-rows: 60px auto auto auto 5%;
+    grid-template-areas: 
+    "sidebar header header header"
+    "sidebar main main main"
+    "sidebar main main main"
+    "sidebar main main main"
+    "sidebar  footer footer footer";
+    width: calc(100%);
+    height: calc(100%);
+}
+
+#sailplan-logo img{
+    margin-left: 12px;
+    margin-top: 20px;
+}
+
+#sailplan-logo{
+    padding-bottom: 40px;
+}
+.side-links{
+    margin-top: 50px;
+}
+
+.side-link1{
+    margin-top: 40px;
+    cursor: pointer;
+}
+.side-link1 img{
+    margin-left: 12px;
+    
+}
+.side-link1 p{
+    float: right;
+    margin-top: 2px;
+    margin-right: 69px;
+    font-size: 17px;
+    font-family: 'Varela Round', sans-serif;
+    color: white;
+}
+
+.side-link1 p:hover{
+    color:rgb(56, 126, 184);
+}
+
+.side-link2{
+    padding-top: 20px;
+    margin-top: 20px;
+    cursor: pointer;
+    background-color:  #585858;
+    padding-bottom: 20px;
+}
+
+.side-link2 img{
+    margin-left: 12px;
+}
+.side-link2 p{
+    float: right;
+    margin-top: 2px;
+    margin-right: 90px;
+    font-size: 17px;
+    font-family: 'Varela Round', sans-serif;
+    color: white;
+}
+
+
+.side-link3{
+    margin-top: 20px;
+    cursor: pointer;
+    margin-bottom: 20px;
+
+}
+
+.side-link3 img{
+    margin-left: 12px;
+}
+.side-link3 p{
+    float: right;
+    margin-top: 8px;
+    margin-right: 10px;
+    font-size: 17px;
+    font-family: 'Varela Round', sans-serif;
+    color: white;
+}
+
+.side-link3 p:hover{
+    color:rgb(56, 126, 184);
+}
+
+#sideflex{
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.side-link4{
+    padding-top: 1vw;
+    margin-top: 20px;
+    cursor: pointer;
+    padding-bottom: 30px;
+
+}
+
+.side-link4 img{
+    margin-left: 12px;
+}
+.side-link4 p{
+    float: right;
+    margin-top: 2px;
+    margin-right: 90px;
+    font-size: 17px;
+    font-family: 'Varela Round', sans-serif;
+    color: white;
+}
+
+.side-link4 p:hover{
+    color:rgb(56, 126, 184);
+}
+
+.side-link5{
+    margin-top: 20px;
+    cursor: pointer;
+
+}
+
+.side-link5 img{
+    margin-left: 12px;
+}
+.side-link5 p{
+    float: right;
+    margin-top: 2px;
+    margin-right: 90px;
+    font-size: 17px;
+    font-family: 'Varela Round', sans-serif;
+    color: white;
+}
+
+.side-link5 p:hover{
+    color:rgb(56, 126, 184);
+}
+
+.side-link6{
+    margin-top: 40px;
+    cursor: pointer;
+
+}
+
+.side-link6 img{
+    margin-left: 12px;
+}
+.side-link6 p{
+    float: right;
+    margin-top: 2px;
+    margin-right: 98px;
+    font-size: 17px;
+    font-family: 'Varela Round', sans-serif;
+    color: white;
+}
+
+.side-link6 p:hover{
+    color:rgb(56, 126, 184);
+}
+
+.footer h1{
+    font-size: 20px;
+    font-family: 'Varela Round', sans-serif;
+    
+    
+}
+
+.footer-nav{
+    background-color: rgb(131, 131, 131);
+    display: inline-block;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-left: 10px;
+    margin-top: 10px;
+    border-radius: 4px;
+}

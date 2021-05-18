@@ -1,0 +1,12 @@
+@media screen{
+    #map{
+        width:calc(100%);
+        height:100%;
+    }
+}
+
+.mapboxg-popup-tip{
+    background-color: red;
+}
+
+

@@ -1,0 +1,96 @@
+<!--This is just the landing page-->
+<div id="navbar">
+    <div id="navbar-logo">
+        <a routerLink="/"><img src="../../assets/images/logo.png" loading="lazy" width="224"></a>
+    </div>
+    <div id="nav-links">
+        <a href="/" class="nav-link" *ngIf="!auth.loggedIn">About SailPlan</a>
+        <a href="/" class="nav-link" *ngIf="!auth.loggedIn">Get in touch</a>
+        <a routerLink="/dashboard" class="nav-link" *ngIf="auth.loggedIn">Dashboard</a>
+        <a href="#" class="nav-link" (click)="auth.login()" *ngIf="!auth.loggedIn">Login</a>
+        <a href="#" class="nav-link" (click)="auth.logout()" *ngIf="auth.loggedIn">Logout</a>
+    </div>
+</div>
+
+<div id="intro">
+    <h1>An Intelligent Navigation Platform <br>for Ships</h1>
+    <div class="spacer"></div>
+    <p>Navigating a ship can be hard, dangerous, and inefficient.<br>That’s why we made SailPlan – a platform for intelligent ship navigation.</p>
+    <button mat-flat-button id="learnmore-button">Learn more</button>
+</div>
+
+<div id="info">
+    <h1>Meet your new navigator</h1>
+    <h2>SailPlan increases safety while reducing operating costs through its digital twin, predictive analytics,<br>
+        smart routing, long-range collision avoidance, geographic-awareness, and much more.</h2>
+    <div id="grid-container">
+        <div class="grid-item">
+            <img src="../../assets/nav-safe.png" alt="nav-safe">
+            <div class="section-title"><h5>Increase navigational safety</h5></div>
+            <div class="section-info">
+                <p>Predictive analytics provides long-range collision avoidance enabling navigators to identify potential collisions hours, even days, in advance and proactively optimize their routes to mitigate these risks.</p>
+            </div>
+        </div>
+        <div class="grid-item">
+            <img src="../../assets/op-cost.jpg" alt="op-cost">
+            <div class="section-title"><h5>Reduce operating costs</h5></div>
+            <div class="section-info">
+                <p>Reduce fuel consumption and improve schedule integrity through real-time data from both deck and engine.  Real-time vessel data and predictive analytics combine to optimize voyages to account for operational constraints, weather, tide, vessel traffic, berth availability, and much more.</p>
+            </div>
+        </div>
+        <div class="grid-item">
+            <img src="../../assets/emer-res.png" alt="emer-res">
+            <div class="section-title"><h5>Better emergency response</h5></div>
+            <div class="section-info">
+                <p>Shoreside personnel receive insights like never before. We provide a real time feed of engine and deck data. SailPlan AI identifies off-nominal events and provides real time alerts and data to shoreside personnel based on key trends, events, or predictive alerts to save precious time when it counts the most.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="learn-more-text">
+        <p>Learn more about <a routerLink="/">SailPlan for Ships</a></p>
+    </div>
+</div>
+
+<div id="contact-us">
+    <div id="learn">
+        <h1>Learn more</h1>
+        <p>We’d love to give you a demo, more information about our platform, and find out how we can work together to solve your maritime challenges.</p>
+        <h2>Find out more about our use cases for:</h2>
+        <ul>
+            <li>Ocean Carriers</li>
+            <li>Tug and barge operators</li>
+            <li>Marine coordination</li>
+            <li>Ferry operations</li>
+            <li>Naval operations</li>
+        </ul>
+        <button mat-flat-button color="acccent">Contact SailPlan</button>
+    </div>
+    <div id="connect">
+        <h1>Connect with us</h1>
+        <form [formGroup]="contactform" (ngSubmit)="onSubmit()">
+
+            <div class="form-label">
+                <label for="name">Name</label>
+            </div>
+            <div class="form-input">
+                <input type="text" id="name" formControlName="name">
+            </div>
+            <div class="form-label">
+                <label for="email">Email</label>
+            </div>
+            <div class="form-input">
+                <input type="email" id="email" formControlName="email">
+            </div>
+            <div class="form-label">
+                <label for="message">Message</label>
+            </div>
+            <div class="form-input">
+                <textarea type="text" id="message" formControlName="message"></textarea>
+            </div>
+            <div class="submitbutton">
+                <button mat-flat-button color="accent" type="submit">Send</button>
+            </div>
+        </form>
+    </div>
+</div>
