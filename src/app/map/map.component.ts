@@ -723,7 +723,8 @@ export class MapComponent implements OnInit {
 
   showAisData() {
     // Zoom into sample AIS vessel location by default
-    const latLongObject = { lat: 43.11443166666667, long: -70.61588833333333 };
+    const latLongObject = { lat: 41.3492835, long: -70.993022 };
+    //const latLongObject = { lat: 43.11443166666667, long: -70.61588833333333 };
 
     /*
       Currently using interval function to fetch vessel gps data every 1 second.  This is easier for demo purposes.

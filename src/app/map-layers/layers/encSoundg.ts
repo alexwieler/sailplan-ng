@@ -1,7 +1,7 @@
 import { BaseLayer } from "./baseLayer";
 
 export default class EncSoundg extends BaseLayer {
-    displayName = 'Sounding'
+    displayName = 'ENCs'
 
     init(){
         this.addSource('noaa_enc_soundg', {

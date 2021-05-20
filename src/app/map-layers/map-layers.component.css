@@ -15,6 +15,19 @@
     overflow-y: auto;
     overflow-x: hidden;
   }
+
+#ledgend-container{
+  position: absolute;
+  z-index: 9999;
+  top: 21em;
+  right: 20px;
+  padding: 20px;
+  border-radius: 5px;
+  width: 15em;
+  display: inline-block;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
   
   .layer{
     cursor: pointer;

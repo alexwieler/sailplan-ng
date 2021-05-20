@@ -94,18 +94,18 @@ body {
   display: grid;
   grid-template-columns: 210px auto;
   /*grid-template-columns: 100%;*/
-  grid-template-rows: auto 450px 450px auto;
-  /*grid-template-rows: 68px 450px 450px;*/
+  /*grid-template-rows: auto 450px 450px auto;*/
+  grid-template-rows: 68px 450px 450px;
   grid-template-areas:
   /*"header header header"
   "main main main"
   "bottom bottom bottom";
   "footer footer footer";*/
 
-    "sidebar header header header"
-    "sidebar main main main"
-    "sidebar bottom bottom bottom"
-    "sidebar footer footer footer";
+    "header header header"
+    "main main main"
+    "bottom bottom bottom"
+    "footer footer footer";
 
   width: calc(100%);
   height: calc(100%);

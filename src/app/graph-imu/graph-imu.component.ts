@@ -14,7 +14,7 @@ import { environment } from '../../environments/environment';
 export class GraphImuComponent implements OnInit {
 
   selection: Array<string> = ["Roll", "Pitch"];
-  sList: Array<string> = ["Roll", "Pitch", "Yaw"];
+  sList: Array<string> = ["Roll", "Pitch", "Yaw", "Cog", "Sog"];
   filterHours: { [key: number]: string } = { 1: 'Last hour', 12: 'Last 12 hours', 24: 'Last 24 hours' };
   dataPoints: Map<string, any> = new Map<string, any>();
   currentStep: any;
@@ -78,6 +78,7 @@ export class GraphImuComponent implements OnInit {
       }
     }
     console.log(this.selection);
+    this.chart.render();
   }
 
 
@@ -140,11 +141,9 @@ export class GraphImuComponent implements OnInit {
             this.maxDate = maxDate;
 
             if (!this.chart) {
-              this.chart = this.buildChart(this.dataPoints.get(this.selection[0]), this.selection[0], this.dataPoints.get(this.selection[1]), this.selection[1]);
+              this.chart = this.buildChart(this.selection[0], this.selection[1]);
             }
-
             this.chart.render();
-
           }
         },
         error => console.log('error getting IMU data', error)
@@ -154,12 +153,13 @@ export class GraphImuComponent implements OnInit {
   }
 
   toggleDataSeries(e) {
+    console.log(e);
     if (typeof (e.dataSeries.visible) === 'undefined' || e.dataSeries.visible) {
       e.dataSeries.visible = false;
     } else {
       e.dataSeries.visible = true;
     }
-    this.chart.render();
+    e.chart.render();
   }
 
   changedHourFilter(item) {
@@ -176,7 +176,7 @@ export class GraphImuComponent implements OnInit {
 
 
   //first version of buildChart - up to 2 graphs at once, will return a new CanvasJS chart. There is a lot of room for improvements.
-  buildChart(pointsFirstGraph, nameFirstGraph: string, pointsSecondGraph, nameSecondGraph: string): any {
+  buildChart(nameFirstGraph: string, nameSecondGraph: string): any {
     const color1 = '#42658a';
     const color2 = '#C24642';
     return new CanvasJS.Chart('chartContainer', {
@@ -231,7 +231,7 @@ export class GraphImuComponent implements OnInit {
         color: color1,
         showInLegend: true,
         name: nameFirstGraph,
-        dataPoints: pointsFirstGraph
+        dataPoints: this.dataPoints.get(nameFirstGraph)
       }, {
         markerSize: 0,
         yValueFormatString: '#.##',
@@ -240,7 +240,7 @@ export class GraphImuComponent implements OnInit {
         color: color2,
         showInLegend: true,
         name: nameSecondGraph,
-        dataPoints: pointsSecondGraph
+        dataPoints: this.dataPoints.get(nameSecondGraph)
       }
       ]
     });
