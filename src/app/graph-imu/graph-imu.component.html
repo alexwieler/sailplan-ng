@@ -18,14 +18,15 @@
       </div>
     </div>
     <div class="col-2">
-      <select (change)="changedHourFilter($event.target.value)">
-        <option *ngFor="let item of filterHours | keyvalue" [value]="item.key">
-          {{item.value}}
-        </option>
-      </select>
+      <div class="float-right">
+        <select (change)=" changedHourFilter($event.target.value)">
+          <option *ngFor="let item of filterHours | keyvalue" [value]="item.key">
+            {{item.value}}
+          </option>
+        </select>
+      </div>
     </div>
   </div>
   <div class="row">
     <div id="chartContainer"></div>
   </div>
-</div>
