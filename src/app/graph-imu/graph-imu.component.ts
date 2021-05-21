@@ -15,7 +15,7 @@ export class GraphImuComponent implements OnInit {
 
   selection: Array<string> = ["Roll", "Pitch"];
   sList: Array<string> = ["Roll", "Pitch", "Yaw", "Cog", "Sog"];
-  filterHours: { [key: number]: string } = { 1: 'Last hour', 12: 'Last 12 hours', 24: 'Last 24 hours' };
+  filterHours: { [key: number]: string } = {0: 'No filters', 1: 'Last hour', 12: 'Last 12 hours', 24: 'Last 24 hours' };
   dataPoints: Map<string, any> = new Map<string, any>();
   currentStep: any;
   mSelected = false;
@@ -141,9 +141,11 @@ export class GraphImuComponent implements OnInit {
             this.maxDate = maxDate;
 
             if (!this.chart) {
+             
               this.chart = this.buildChart(this.selection[0], this.selection[1]);
             }
             this.chart.render();
+           
           }
         },
         error => console.log('error getting IMU data', error)
@@ -163,15 +165,85 @@ export class GraphImuComponent implements OnInit {
   }
 
   changedHourFilter(item) {
-    //decide if we will filter the chart here or we will call to imu/latest (sending as a parameter how many hours)
     let maxDate = new Date();
     let minDate = new Date();
 
+
     minDate.setHours(minDate.getHours() - item);
+ 
     this.minDate = minDate;
     this.maxDate = maxDate;
 
-    this.chart.render();
+    
+    if(item ===0){
+      this.minDate = new Date(0);
+      this.maxDate = new Date(0);
+    }
+
+    //decide if we will filter the chart here or we will call to imu/latest (sending as a parameter how many hours)
+    //Here we call to 'imu/latest' endpoint in order to filter this chart with dates selected
+    this.http.get<any>(`${environment.baseUrl}/imu/latest`, { params: { userid: this.id.sub , mindate: this.minDate, maxdate: this.maxDate} }).subscribe(
+      response => {
+        //console.log('imuResponse: ', response);
+        const imuResponse = response;
+        this.imuData = imuResponse;
+        const tripLengthHours = this.imuData.length;
+        this.dataPointLength = tripLengthHours;
+    
+        //dataPoints init/clear, one array per graph.
+        this.dataPoints = new Map<string, any>();
+        for (let i = 0; i < this.selection.length; i++) {
+          this.dataPoints.set(this.selection[i], []);
+        }
+    
+        var prevSystemTime = 0;
+    
+        for (let i = 0; i < tripLengthHours; i++) {
+    
+          let systemTime = this.imuData[i].systemTime;
+          let date = new Date(0);
+          date.setUTCSeconds(Math.floor((systemTime)));
+    
+          if (systemTime !== prevSystemTime) {
+    
+            for (let j = 0; j < this.selection.length; j++) {
+              this.dataPoints.get(this.selection[j]).push({
+                x: date,
+                y: this.imuData[i][this.selection[j].toLowerCase()],
+              })
+            }
+          }
+          prevSystemTime = systemTime;
+        }
+        if (this.imuData != []) {
+    
+          minDate = this.dataPoints.get(this.selection[0])[0].x;
+          maxDate = this.dataPoints.get(this.selection[0])[this.dataPoints.get(this.selection[0]).length - 1].x;
+          this.maxDate = maxDate;
+    
+          //Here I destroy the chart and reuild it with current data
+          if (this.chart) {
+            console.log("destroy chart and rebuild")
+            this.chart.destroy();
+            this.chart = this.buildChart(this.selection[0], this.selection[1]);
+          }
+          else{
+            this.chart = this.buildChart(this.selection[0], this.selection[1]);
+          }
+    
+          this.chart.render();
+    
+        }
+      },
+      error => console.log('error getting IMU data', error)
+    );
+    
+
+   // minDate.setHours(minDate.getHours() - item);
+    //this.minDate = minDate;
+    //this.maxDate = maxDate;
+
+   // this.chart.render();
   }
 
 
