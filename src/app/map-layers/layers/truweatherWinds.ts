@@ -2,7 +2,7 @@ import { BaseLayer } from "./baseLayer";
 import { environment } from '../../../environments/environment';
 
 export default class EncSoundgLayer extends BaseLayer {
-    displayName = 'Surface Winds'
+    displayName = 'Surface Winds';
     ledgend: HTMLImageElement = null;
 
     initLedgend(): void{
@@ -16,13 +16,10 @@ export default class EncSoundgLayer extends BaseLayer {
 
     toggleLedgend(): void{
         if (!this.ledgend){
-            alert('initLedgend')
             this.initLedgend();
         }else if (this.ledgend.style.display === 'none'){
-            alert('showing')
             this.ledgend.style.display = 'inline';
         }else {
-            alert('hiding')
             this.ledgend.style.display = 'none';
         }
     }

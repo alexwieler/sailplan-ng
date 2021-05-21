@@ -5,7 +5,6 @@ import { AuthService } from "../auth.service";
 import { HttpClient } from "@angular/common/http";
 import { VesselsService } from "../vessels.service";
 import { environment } from '../../environments/environment';
-import { rhumbDistance } from '@turf/turf';
 
 @Component({
   selector: 'app-graph-imu',
@@ -16,7 +15,7 @@ export class GraphImuComponent implements OnInit {
 
   selection: Array<string> = ["Roll", "Pitch"];
   sList: Array<string> = ["Roll", "Pitch", "Yaw", "Cog", "Sog"];
-  filterHours: { [key: number]: string } = { 0: 'No filters', 1: 'Last hour', 12: 'Last 12 hours', 24: 'Last 24 hours' };
+  filterHours: { [key: number]: string } = { 0: 'All time', 1: 'Last hour', 12: 'Last 12 hours', 24: 'Last 24 hours' };
   dataPoints: Map<string, any> = new Map<string, any>();
   currentStep: any;
   mSelected = false;
@@ -29,6 +28,8 @@ export class GraphImuComponent implements OnInit {
   dataPointLength: any;
   minDate: any;
   maxDate: any;
+  graphMaxDate: any;
+  graphMinDate: any;
 
   gpsVessels: any;
 
@@ -59,6 +60,8 @@ export class GraphImuComponent implements OnInit {
           this.dataPoints.set(this.selection[i], []);
         }
 
+        this.minDate = new Date(0);
+        this.maxDate = new Date();
         // TODO:  Use async / await for showAisData, instead of putting all the code in showAisData?  Maybe subscribe instead?
         // Subscribe to vessel AIS data
         this.showImuData();
@@ -134,10 +137,10 @@ export class GraphImuComponent implements OnInit {
             let minDate = new Date();
 
             minDate = this.dataPoints.get(this.selection[0])[0].x;
-            this.minDate = minDate;
-
             maxDate = this.dataPoints.get(this.selection[0])[this.dataPoints.get(this.selection[0]).length - 1].x;
-            this.maxDate = maxDate;
+
+            this.graphMinDate = minDate;
+            this.graphMaxDate = maxDate;
 
             if (!this.chart) {
 
@@ -164,17 +167,15 @@ export class GraphImuComponent implements OnInit {
   }
 
   changedHourFilter(item) {
+
     this.maxDate = new Date();
-    if (item === 0)
+    if (item == 0)
       this.minDate = new Date(0);
     else {
-      let newDate = new Date();
-      this.minDate = newDate.setHours(newDate.getHours() - item);
+      let newMinDate = new Date();
+      this.minDate = new Date(newMinDate.setHours(newMinDate.getHours() - item));
     }
-    console.log(this.minDate, this.maxDate);
-    this.showImuData();
   }
-
 
   //first version of buildChart - up to 2 graphs at once, will return a new CanvasJS chart. There is a lot of room for improvements.
   buildChart(nameFirstGraph: string, nameSecondGraph: string): any {
@@ -212,8 +213,8 @@ export class GraphImuComponent implements OnInit {
         titleFontFamily: '"Varela Round", sans-serif',
         margin: 0,
         labelAngle: -20,
-        viewportMinimum: this.minDate,
-        viewportMaximum: this.maxDate
+        viewportMinimum: this.graphMinDate,
+        viewportMaximum: this.graphMaxDate
       },
 
 
