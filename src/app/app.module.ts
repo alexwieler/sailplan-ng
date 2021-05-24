@@ -42,6 +42,7 @@ import { AlertDetailComponent } from './alert-detail/alert-detail.component';
 import { GraphImuComponent } from './graph-imu/graph-imu.component';
 import { MapLayersComponent } from './map-layers/map-layers.component'
 import { environment } from '../environments/environment';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 
 
@@ -72,6 +73,7 @@ const config: SocketIoConfig = { url: environment.baseUrl, options: {} };
     AlertDetailComponent,
     GraphImuComponent,
     MapLayersComponent
+    
   ],
   imports: [
     BrowserModule,
@@ -92,6 +94,7 @@ const config: SocketIoConfig = { url: environment.baseUrl, options: {} };
     MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    NgxSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

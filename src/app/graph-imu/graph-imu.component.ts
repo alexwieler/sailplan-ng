@@ -6,6 +6,7 @@ import { HttpClient } from "@angular/common/http";
 import { VesselsService } from "../vessels.service";
 import { environment } from '../../environments/environment';
 import { rhumbDistance } from '@turf/turf';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-graph-imu',
@@ -34,7 +35,10 @@ export class GraphImuComponent implements OnInit {
 
   imuData: any = [];
 
-  constructor(public auth: AuthService, private http: HttpClient) {
+  isDataChanged: boolean = false;
+
+
+  constructor(public auth: AuthService, private http: HttpClient,private spinner: NgxSpinnerService) {
 
     this.auth.userProfile$.subscribe(res => this.id = res);
 
@@ -43,13 +47,25 @@ export class GraphImuComponent implements OnInit {
     this.currentStep = 1;
 
   }
+  
 
   ngOnInit(): void {
+
+
+     /** spinner starts on init */
+    // this.spinner.show();
+     //setTimeout(() => {
+         /** spinner ends after 5 seconds */
+       //  this.spinner.hide();
+    // }, 5000);
+    
+   
 
     // Each time the app is loaded initially, delete all existing AIS data from database collection/table.
     // We manually run a python script each time to populate the database with simulated live data.
     // Soon, we will be receiving actual live data and will not need to clear the database table each time.
     this.http.delete<any>(`${environment.baseUrl}/imu`).subscribe(
+      
       response => {
         console.log('Clear IMU database');
 
@@ -64,9 +80,12 @@ export class GraphImuComponent implements OnInit {
         this.showImuData();
 
 
+
       },
       error => console.log('Error clearing AIS database', error)
     );
+
+    
   }
 
   toggleSelection(arg: string) {
@@ -91,6 +110,8 @@ export class GraphImuComponent implements OnInit {
       }
 
       this.currentStep++;
+
+      //this.spinner.show();
 
       this.http.get<any>(`${environment.baseUrl}/imu/latest`, {
         params: { userid: this.id.sub, mindate: this.minDate, maxdate: this.maxDate }
@@ -127,24 +148,25 @@ export class GraphImuComponent implements OnInit {
             prevSystemTime = systemTime;
           }
 
-
+          
           if (this.imuData != []) {
 
-            let maxDate = new Date();
-            let minDate = new Date();
+              let maxDate = new Date();
+              let minDate = new Date();
+  
+              minDate = this.dataPoints.get(this.selection[0])[0].x;
+              this.minDate = minDate;
+  
+              maxDate = this.dataPoints.get(this.selection[0])[this.dataPoints.get(this.selection[0]).length - 1].x;
+              this.maxDate = maxDate;
 
-            minDate = this.dataPoints.get(this.selection[0])[0].x;
-            this.minDate = minDate;
-
-            maxDate = this.dataPoints.get(this.selection[0])[this.dataPoints.get(this.selection[0]).length - 1].x;
-            this.maxDate = maxDate;
-
-            if (!this.chart) {
-
-              this.chart = this.buildChart(this.selection[0], this.selection[1]);
-            }
-            this.chart.render();
-
+              if (!this.chart || this.isDataChanged) {
+                console.log(this.chart);
+                this.chart = this.buildChart(this.selection[0], this.selection[1]);
+              }
+              this.spinner.hide();
+              this.chart.render();
+              this.isDataChanged = false;
           }
         },
         error => console.log('error getting IMU data', error)
@@ -164,22 +186,29 @@ export class GraphImuComponent implements OnInit {
   }
 
   changedHourFilter(item) {
-    this.maxDate = new Date();
-    if (item === 0)
-      this.minDate = new Date(0);
-    else {
-      let newDate = new Date();
-      this.minDate = newDate.setHours(newDate.getHours() - item);
-    }
-    console.log(this.minDate, this.maxDate);
-    this.showImuData();
+
+    this.isDataChanged = true;
+      this.spinner.show();
+    
+      this.maxDate = new Date();
+      if (item === 0)
+        this.minDate = new Date(0);
+      else {
+        let newDate = new Date();
+        this.minDate = new Date(newDate.setHours(newDate.getHours() - item));
+      }
+      console.log(this.minDate, this.maxDate);
+      this.showImuData();
+  
   }
+
 
 
   //first version of buildChart - up to 2 graphs at once, will return a new CanvasJS chart. There is a lot of room for improvements.
   buildChart(nameFirstGraph: string, nameSecondGraph: string): any {
     const color1 = '#42658a';
     const color2 = '#C24642';
+    
     return new CanvasJS.Chart('chartContainer', {
 
       title: {
